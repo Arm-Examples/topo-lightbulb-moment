@@ -1,0 +1,50 @@
+#include <zephyr/dt-bindings/clock/stm32mp2_clock.h>
+#include <zephyr/dt-bindings/memory-attr/memory-attr-arm.h>
+
+/ {
+	chosen {
+		zephyr,ipc_shm = &ipc_shmem;
+		zephyr,ipc = &mailbox;
+		zephyr,ipm = &mailbox;
+	};
+
+	/*
+	 * IPC shared memory region
+	 * From Meminfo: ipc-shmem-1@81200000
+	 * Total: 0x81200000 to 0x81300000 = 1MB
+	 */
+	ipc_shmem: memory@81200000 { /* Fetched from ` ls /sys/firmware/devicetree/base/reserved-memory/ | grep "vdev" on linux */
+		compatible = "zephyr,memory-region", "mmio-sram";
+		reg = <0x81200000 DT_SIZE_K(1024)>;  /* 1MB to cover vrings + buffer pool. */
+		zephyr,memory-region = "SRAM_NOCACHE";
+		zephyr,memory-attr = <DT_MEM_ARM_MPU_RAM_NOCACHE>; /* Must be non-cacheable for coherency with A core */
+	};
+
+	/* IPCC Mailbox for interrupts between M and A cores */
+	soc {
+		mailbox: mailbox@40490000 { /*  40490000 is fetched from `ls -1 /sys/firmware/devicetree/base/soc@0 | grep -i mailbox` on Linux side */
+			compatible = "st,stm32-ipcc-mailbox";
+			reg = <0x40490000 DT_SIZE_K(1)>;
+			clocks = <&rcc 0x7C4 0x2>;
+			interrupts = <171 0>, <172 0>; /* https://www.st.com/resource/en/reference_manual/rm0457-stm32mp2325xx-advanced-armbased-3264bit-mpus-stmicroelectronics.pdf page 1741 */
+			interrupt-names = "rxo", "txf";
+			#mbox-cells = <1>;
+			status = "okay";
+		};
+	};
+
+	/* GPIO switch configuration for GPIOA pin 1 */
+	gpio_switch {
+		compatible = "gpio-keys";
+		status = "okay";
+		switch_pin0: switch_pin_0 {
+			gpios = <&gpioa 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+			label = "Switch Pin 0";
+		};
+	};
+
+};
+
+&gpioa {
+	status = "okay";
+};

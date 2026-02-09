@@ -1,0 +1,28 @@
+--- a/drivers/ipm/ipm_stm32_ipcc.c
++++ b/drivers/ipm/ipm_stm32_ipcc.c
+@@ -241,20 +241,11 @@ static int stm32_ipcc_mailbox_init(const struct device *dev)
+ 
+ 	struct stm32_ipcc_mbx_data *data = dev->data;
+ 	const struct stm32_ipcc_mailbox_config *cfg = dev->config;
+-	const struct device *clk;
+ 	uint32_t i;
+ 
+-	clk = DEVICE_DT_GET(STM32_CLOCK_CONTROL_NODE);
+-
+-	if (!device_is_ready(clk)) {
+-		LOG_ERR("clock control device not ready");
+-		return -ENODEV;
+-	}
+-
+-	/* enable clock */
+-	if (clock_control_on(clk,
+-			     (clock_control_subsys_t)&cfg->pclken) != 0) {
+-		return -EIO;
+-	}
++	/* In remoteproc mode, Linux has already enabled the clock via SCMI.
++	 * M33 does not have access to RCC registers, so skip clock_control_on().
++	 */
++	LOG_INF("IPCC clock managed by Linux - skipping clock init");
+ 
+ 	/* Disable RX and TX interrupts */
+ 	IPCC_DisableIT_TXF(cfg->ipcc);

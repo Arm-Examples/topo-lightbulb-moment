@@ -1,24 +1,39 @@
 services:
-  cortexa_app:
+  ollama:
+    platform: linux/arm64
     extends:
-      file: cortexa_app/compose.yaml
-      service: cortexa_app
-  cortexm_app:
+      file: ollama/compose.yaml
+      service: ollama
+
+  webapp:
+    platform: linux/arm64
     extends:
-      file: cortexm_app/compose.yaml
-      service: cortexm_app
+      file: webapp/compose.yaml
+      service: webapp
     build:
       args:
-        PLATFORM: arm_edge_board
-        REMOTEPROC: m33
+        LLM_PROMPT_PRESET: "shakespearean english"
 
+
+  zephyr:
+    extends:
+      file: zephyr-application/compose.yaml
+      service: zephyr
+
+volumes:
+  ollama-data:
+
+# Topo-specific metadata
 x-topo:
-  name: "topo-project"
-  description: "topo project"
+  name: "Lightbulb moment"
+  description: "Reads a switch over GPIO pins on an M class cpu, reports switch state over Remoteproc Message, then a web application on the A class reads this and displays a lightbulb in either the on or off state. The lightbulb state is described by an LLM in any user-specified style."
+  features:
+    - "SVE"
+    - "NEON"
   args:
-    PLATFORM:
-      description: Target device to build for
-      default: arm_edge_board
-    REMOTEPROC:
-      description: remoteprocessor name to Target
-      default: m33
+    LLM_PROMPT_PRESET:
+      description: |
+        The writing style for the LLM to use when generating messages about the light bulb state. Can be any style description (e.g., "shakespearean english", "pirate", "haiku", "detective noir").
+      required: true
+      example: "shakespearean english"
+      default: "shakespearean english"

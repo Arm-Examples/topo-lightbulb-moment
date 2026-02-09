@@ -1,0 +1,14 @@
+[project]
+name = "stm32-a-m-comms-userapp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "eventlet>=0.40.3",
+    "flask>=3.1.2",
+    "flask-socketio>=5.5.1",
+    "python-socketio>=5.14.3",
+    "ruff>=0.14.4",
+    "requests>=2.31.0",
+]

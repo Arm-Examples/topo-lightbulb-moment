@@ -1,0 +1,22 @@
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        LLM_PROMPT_PRESET: "pirate"
+    privileged: true
+    ports:
+      - "3000:3000"
+    volumes:
+      # We mount the entirety of dev because when this is deployed *with* the remoteproc application, the device /dev/ttyRPMSG0 doesn't exist until zephyr has fully booted, so this container would fail to build.
+      - "/dev:/dev"
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - MESSAGE_INTERVAL=${MESSAGE_INTERVAL:-10}
+      - OLLAMA_URL=http://ollama:11434
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - ollama
+      - zephyr
+    restart: on-failure

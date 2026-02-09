@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Switch Monitor</title>
+        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background-color: #1a1a1a;
+                font-family: Arial, sans-serif;
+            }
+
+            .container {
+                text-align: center;
+                padding: 20px;
+            }
+
+            .status-image {
+                max-width: 90vw;
+                max-height: 80vh;
+                width: auto;
+                height: auto;
+                display: block;
+                margin: 0 auto;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            }
+
+            .connection-status {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: bold;
+                color: white;
+            }
+
+            .connected {
+                background-color: #28a745;
+            }
+
+            .disconnected {
+                background-color: #dc3545;
+            }
+
+            .state-label {
+                margin-top: 20px;
+                font-size: 24px;
+                font-weight: bold;
+                color: #ffffff;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+            }
+
+            .llm-message {
+                margin-top: 30px;
+                font-size: 18px;
+                color: #cccccc;
+                font-style: italic;
+                min-height: 30px;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+                line-height: 1.5;
+                transition: opacity 0.3s ease;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div id="connection-status" class="connection-status disconnected">
+                Disconnected
+            </div>
+            <img
+                id="status-image"
+                class="status-image"
+                src="/static/assets/{{ initial_state }}.png"
+                alt="Switch Status"
+            />
+            <div id="state-label" class="state-label">{{ initial_state }}</div>
+            <div id="llm-message" class="llm-message">{{ initial_message }}</div>
+        </div>
+
+        <script>
+            // Handle websocket connection
+            const socket = io();
+
+            const statusImage = document.getElementById("status-image");
+            const stateLabel = document.getElementById("state-label");
+            const llmMessage = document.getElementById("llm-message");
+            const connectionStatus =
+                document.getElementById("connection-status");
+
+            // Handle connection
+            socket.on("connect", () => {
+                console.log("Connected to server");
+                connectionStatus.textContent = "Connected";
+                connectionStatus.className = "connection-status connected";
+            });
+
+            // Handle disconnection
+            socket.on("disconnect", () => {
+                console.log("Disconnected from server");
+                connectionStatus.textContent = "Disconnected";
+                connectionStatus.className = "connection-status disconnected";
+            });
+
+            // Handle updates
+            socket.on("state_update", (data) => {
+                console.log("State update:", data.state);
+                const state = data.state;
+
+                // Update
+                statusImage.src = `/static/assets/${state}.png`;
+                stateLabel.textContent = state;
+
+                statusImage.style.opacity = "0.5";
+                setTimeout(() => {
+                    statusImage.style.opacity = "1";
+                }, 150);
+            });
+
+            // Handle LLM message updates
+            socket.on("message_update", (data) => {
+                console.log("Message update:", data.message);
+
+                // Fade out, update, fade in
+                llmMessage.style.opacity = "0";
+                setTimeout(() => {
+                    llmMessage.textContent = data.message;
+                    llmMessage.style.opacity = "1";
+                }, 300);
+            });
+        </script>
+    </body>
+</html>

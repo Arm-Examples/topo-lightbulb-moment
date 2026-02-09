@@ -1,6 +1,8 @@
-# Topo Example Project
+# Lightbulb Moment
 
-This is an example project template for Topo.
+Reads a switch over GPIO pins on an M class cpu, reports switch state over Remoteproc Message, then a web application on the A class reads this and displays a lightbulb in either the on or off state. The lightbulb state is described by an LLM in any user-specified style.
+
+Features: SVE, NEON
 
 ## Usage
 
@@ -8,10 +10,21 @@ The easiest way to deploy is using `topo`. Download and install `topo` from [her
 
 ### Clone the project:
 ```bash
-topo clone example-project <url-to-repo>
+topo clone lightbulb <url-to-repo>
 ```
 
-Topo uses [remoteproc-runtime](https://github.com/arm/remoteproc-runtime) to deploy containers to remote processors. 
+Or to use with a custom prompt try:
+```bash
+topo clone lightbulb <url-to-repo> -- LLM_PROMPT_PRESET="pirate"
+```
+
+Available presets are:
+- default
+- humorous
+- pirate
+- poetic
+
+Topo uses [remoteproc-runtime](https://github.com/arm/remoteproc-runtime) to deploy containers to remote processors.
 If it is not already installed, you can install it using topo:
 ```bash
 topo install remoteproc-runtime --target <ip-address-of-target>
@@ -19,7 +32,6 @@ topo install remoteproc-runtime --target <ip-address-of-target>
 
 ### Build and Deploy the project:
 ```bash
-cd example-project
+cd lightbulb
 topo deploy --target <ip-address-of-target>
 ```
-

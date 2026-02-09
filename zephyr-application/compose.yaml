@@ -1,0 +1,13 @@
+services:
+  zephyr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Default: i.MX93 board
+        BOARD: ${ZEPHYR_BOARD:-imx93_evk/mimx9352/m33}
+        OVERLAY_FILE: ${ZEPHYR_OVERLAY:-imx93_evk_mimx9352_m33.overlay}
+        CONF_FILE: ${ZEPHYR_CONF:-prj.imx93.conf}
+    runtime: io.containerd.remoteproc.v1
+    annotations:
+      remoteproc.name: m33
