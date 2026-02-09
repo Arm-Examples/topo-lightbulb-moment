@@ -1,0 +1,24 @@
+services:
+  cortexa_app:
+    extends:
+      file: cortexa_app/compose.yaml
+      service: cortexa_app
+  cortexm_app:
+    extends:
+      file: cortexm_app/compose.yaml
+      service: cortexm_app
+    build:
+      args:
+        PLATFORM: arm_edge_board
+        REMOTEPROC: m33
+
+x-topo:
+  name: "topo-project"
+  description: "topo project"
+  args:
+    PLATFORM:
+      description: Target device to build for
+      default: arm_edge_board
+    REMOTEPROC:
+      description: remoteprocessor name to Target
+      default: m33
