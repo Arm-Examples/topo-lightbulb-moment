@@ -1,0 +1,25 @@
+{
+  "name": "Webapp Dev Container",
+  "dockerComposeFile": [
+    "../compose.yaml",
+    "compose.webapp.yaml"
+  ],
+  "service": "webapp",
+  "runServices": ["webapp"],
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=${localWorkspaceFolder}/webapp,target=/workspace,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "cmake.configureOnOpen": false,
+        "cmake.showOptionsMovedNotification": false
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  }
+}

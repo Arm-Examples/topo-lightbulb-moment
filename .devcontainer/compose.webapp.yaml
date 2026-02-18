@@ -1,0 +1,10 @@
+services:
+  webapp:
+    volumes: []
+  ollama:
+    profiles:
+      - full
+  
+  zephyr:
+    profiles:
+      - full
