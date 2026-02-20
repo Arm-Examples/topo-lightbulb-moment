@@ -8,10 +8,11 @@ services:
         condition: service_healthy
         required: false
     volumes: []
+
   ollama:
     profiles:
       - full
-  
+
   zephyr:
     profiles:
       - full

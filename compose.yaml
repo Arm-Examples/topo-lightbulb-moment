@@ -14,7 +14,6 @@ services:
       args:
         LLM_PROMPT_PRESET: "shakespearean english"
 
-
   zephyr:
     extends:
       file: zephyr-application/compose.yaml
