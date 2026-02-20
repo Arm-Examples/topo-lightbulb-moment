@@ -1,5 +1,5 @@
 {
-  "name": "Webapp",
+  "name": "webapp",
   "dockerComposeFile": [
     "../../compose.yaml",
     "compose.webapp.yaml"
