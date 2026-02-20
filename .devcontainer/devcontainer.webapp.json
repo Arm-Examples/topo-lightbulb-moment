@@ -12,10 +12,6 @@
   ],
   "customizations": {
     "vscode": {
-      "settings": {
-        "cmake.configureOnOpen": false,
-        "cmake.showOptionsMovedNotification": false
-      },
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance"
