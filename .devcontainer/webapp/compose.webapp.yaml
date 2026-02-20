@@ -1,0 +1,19 @@
+services:
+  webapp:
+    command: sleep infinity
+    depends_on:
+      ollama:
+        condition: service_healthy
+        required: false
+      zephyr:
+        condition: service_healthy
+        required: false
+    volumes: []
+
+  ollama:
+    profiles:
+      - full
+
+  zephyr:
+    profiles:
+      - full

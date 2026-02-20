@@ -1,0 +1,21 @@
+{
+  "name": "webapp",
+  "dockerComposeFile": [
+    "../../compose.yaml",
+    "compose.webapp.yaml"
+  ],
+  "service": "webapp",
+  "runServices": ["webapp"],
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=${localWorkspaceFolder}/webapp,target=/workspace,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  }
+}
