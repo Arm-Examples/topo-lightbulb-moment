@@ -1,7 +1,7 @@
 {
-  "name": "Webapp Dev Container",
+  "name": "Webapp",
   "dockerComposeFile": [
-    "../compose.yaml",
+    "../../compose.yaml",
     "compose.webapp.yaml"
   ],
   "service": "webapp",
