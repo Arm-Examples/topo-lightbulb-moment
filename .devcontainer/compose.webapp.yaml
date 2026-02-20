@@ -1,5 +1,12 @@
 services:
   webapp:
+    depends_on:
+      ollama:
+        condition: service_healthy
+        required: false
+      zephyr:
+        condition: service_healthy
+        required: false
     volumes: []
   ollama:
     profiles:

@@ -17,10 +17,6 @@ services:
       - OLLAMA_URL=http://ollama:11434
       - PYTHONUNBUFFERED=1
     depends_on:
-      ollama:
-        condition: service_healthy
-        required: false
-      zephyr:
-        condition: service_healthy
-        required: false
+      - ollama
+      - zephyr
     restart: on-failure
