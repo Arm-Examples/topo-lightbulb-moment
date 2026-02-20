@@ -18,7 +18,9 @@ services:
       - PYTHONUNBUFFERED=1
     depends_on:
       ollama:
+        condition: service_healthy
         required: false
       zephyr:
+        condition: service_healthy
         required: false
     restart: on-failure
