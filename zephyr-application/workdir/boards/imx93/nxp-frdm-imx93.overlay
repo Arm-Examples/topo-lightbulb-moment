@@ -1,0 +1,52 @@
+/*
+ * Copyright 2025 NXP
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+ 
+#include <zephyr/dt-bindings/gpio/gpio.h>
+// https://github.com/zephyrproject-rtos/zephyr/blob/caa8079a5362cd0437ec4d74c888077857df1a9c/samples/subsys/ipc/openamp_rsc_table/boards/imx93_evk_mimx9352_m33.overlay
+
+/ {
+	chosen {
+		/*
+		 * shared memory reserved for the inter-processor communication
+		 */
+		zephyr,ipc_shm = &shmem;
+		zephyr,ipc_rsc_table = &rsc_table;
+		zephyr,ipc = &mailbox0;
+	};
+
+	shmem: memory@a4000000 {
+		compatible = "mmio-sram";
+		reg = <0xa4000000 0x500000>;
+	};
+
+	rsc_table: memory@2001e000 {
+		compatible = "mmio-sram";
+		reg = <0x2001e000 0x100>;
+	};
+
+	mailbox0: mailbox {
+		compatible = "zephyr,mbox-ipm";
+		mboxes = <&mu1 1>, <&mu1 1>;
+		mbox-names = "tx", "rx";
+	};
+
+	gpio_switch {
+		compatible = "gpio-keys";
+		status = "okay";
+		switch_pin0: switch_pin_0 {
+			gpios = <&gpio2 3 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Switch Pin 0";
+		};
+	};
+};
+
+&mu1 {
+	status = "okay";
+};
+
+&gpio2 {
+	status = "okay";
+};

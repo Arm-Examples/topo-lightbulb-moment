@@ -10,19 +10,8 @@ The easiest way to deploy is using `topo`. Download and install `topo` from [her
 
 ### Clone the project:
 ```bash
-topo clone lightbulb <url-to-repo>
+topo clone lightbulb https://github.com/Arm-Examples/topo-lightbulb-moment.git
 ```
-
-Or to use with a custom prompt try:
-```bash
-topo clone lightbulb <url-to-repo> -- LLM_PROMPT_PRESET="pirate"
-```
-
-Available presets are:
-- default
-- humorous
-- pirate
-- poetic
 
 Topo uses [remoteproc-runtime](https://github.com/arm/remoteproc-runtime) to deploy containers to remote processors.
 If it is not already installed, you can install it using topo:
