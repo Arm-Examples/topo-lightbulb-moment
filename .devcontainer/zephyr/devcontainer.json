@@ -1,0 +1,20 @@
+{
+	"name": "zephyr",
+	"dockerComposeFile": "compose.devcontainer.yaml",
+	"service": "zephyr",
+	"runServices": [
+		"zephyr"
+	],
+	"customizations": {
+		"codespaces": {
+			"settings": {
+				"cmake.configureOnOpen": false,
+				"cmake.showOptionsMovedNotification": false
+			},
+			"extensions": [
+				"ms-vscode.cmake-tools",
+				"ms-vscode.cpptools-extension-pack"
+			]
+		}
+	}
+}
