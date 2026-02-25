@@ -2,6 +2,10 @@
 	"name": "zephyr",
 	"dockerComposeFile": "compose.devcontainer.yaml",
 	"service": "zephyr",
+	"workspaceFolder": "/workspace",
+	"mounts": [
+		"source=${localWorkspaceFolder},target=/workspace,type=bind"
+	],
 	"runServices": [
 		"zephyr"
 	],
