@@ -1,6 +1,6 @@
 FROM alpine/ollama:0.12.10
 
-# Pull TinyLlama model during build
+# Pull model during build
 RUN ollama serve & \
     sleep 5 && \
     ollama pull smollm:135m && \
