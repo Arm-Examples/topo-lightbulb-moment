@@ -18,7 +18,7 @@ DEVICE_PATH = "/dev/ttyRPMSG0"
 MESSAGE_INTERVAL = int(os.environ.get("MESSAGE_INTERVAL", "10"))
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://ollama:11434")
 LLM_PROMPT_PRESET = os.environ.get("LLM_PROMPT_PRESET", "modern english")
-MODEL_NAME = "tinyllama"
+MODEL_NAME = "smollm:135m"
 
 
 def generate_llm_message(state: Literal["on", "off"]) -> str:
