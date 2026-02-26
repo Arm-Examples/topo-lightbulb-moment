@@ -20,7 +20,6 @@ COPY workdir/ /workdir/
 WORKDIR /workdir
 
 # Copy platform-specific configs to workdir root and apply patches (if needed)
-ARG PLATFORM
 RUN if [ "$PLATFORM" = "stm32mp257" ]; then \
     cp boards/stm32mp257f/prj.conf . && \
     cp boards/stm32mp257f/stm32mp257f_dk_stm32mp257fxx_m33.overlay . && \
@@ -33,7 +32,6 @@ RUN if [ "$PLATFORM" = "stm32mp257" ]; then \
     fi
 
 # Build
-ARG PLATFORM
 RUN if [ "$PLATFORM" = "stm32mp257" ]; then \
     west build -b stm32mp257f_dk/stm32mp257fxx/m33 \
     -- -DDTC_OVERLAY_FILE=stm32mp257f_dk_stm32mp257fxx_m33.overlay && \

@@ -33,24 +33,6 @@ PLATFORM=imx93 REMOTEPROC=imx-rproc docker compose build
 PLATFORM=imx93 REMOTEPROC=imx-rproc docker compose up -d
 ```
 
-### Configuration
-
-The compose.yaml supports the following environment variables:
-
-- `PLATFORM` - Target platform (`stm32mp257` or `imx93`, default: `stm32mp257`)
-- `REMOTEPROC` - Remoteproc name (`m33` for STM32MP257, `imx-rproc` for IMX93, default: `m33`)
-
-These can be set in a `.env` file or passed directly:
-```bash
-# Create a .env file
-echo "PLATFORM=imx93" > .env
-echo "REMOTEPROC=imx-rproc" >> .env
-
-# Then run
-docker compose build
-docker compose up -d
-```
-
 ### Manual Build and Deploy
 
 Alternatively, you can build and deploy manually:
