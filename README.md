@@ -13,7 +13,7 @@ The easiest way to deploy is using `topo`. Download and install `topo` from [her
 topo clone lightbulb https://github.com/Arm-Examples/topo-lightbulb-moment.git
 ```
 
-Or to use with a custom prompt style:
+Or to use a custom prompt non-interactively:
 ```bash
 topo clone lightbulb https://github.com/Arm-Examples/topo-lightbulb-moment.git -- LLM_PROMPT_PRESET="pirate"
 ```
