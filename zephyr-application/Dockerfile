@@ -5,10 +5,11 @@ RUN git -C /workdir/zephyr fetch --all \
 
 RUN west update
 
-FROM base AS build
 COPY workdir/ipm_stm32_ipcc.patch /tmp/
 # Patch IPM driver to skip clock init in remoteproc mode (Linux manages clocks on this board)
 RUN cd /workdir/zephyr && patch -p1 < /tmp/ipm_stm32_ipcc.patch
+
+FROM base AS build
 COPY workdir/ /workdir/
 
 RUN west build -b stm32mp257f_dk/stm32mp257fxx/m33 && \
