@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: deploy
       args:
         # Default: i.MX93 board
         BOARD: ${ZEPHYR_BOARD:-imx93_evk/mimx9352/m33}

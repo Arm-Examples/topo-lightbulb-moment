@@ -1,0 +1,7 @@
+services:
+  zephyr:
+    build:
+      context: ../../zephyr-application
+      dockerfile: Dockerfile
+      target: dev
+    command: sleep infinity

@@ -1,0 +1,25 @@
+{
+	"name": "zephyr",
+	"dockerComposeFile": "compose.devcontainer.yaml",
+	"service": "zephyr",
+	"workspaceFolder": "/workspace/zephyr-application/workdir",
+	"mounts": [
+		"source=${localWorkspaceFolder},target=/workspace,type=bind"
+	],
+    "updateRemoteUserUID": true,
+	"runServices": [
+		"zephyr"
+	],
+	"customizations": {
+		"codespaces": {
+			"settings": {
+				"cmake.configureOnOpen": false,
+				"cmake.showOptionsMovedNotification": false
+			},
+			"extensions": [
+				"ms-vscode.cmake-tools",
+				"ms-vscode.cpptools-extension-pack"
+			]
+		}
+	}
+}
