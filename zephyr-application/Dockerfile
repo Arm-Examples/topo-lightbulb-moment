@@ -2,6 +2,10 @@ FROM zephyrprojectrtos/zephyr-build:v0.28.0 AS build
 
 ARG PLATFORM=stm32mp257
 
+USER root
+RUN pip install jsonschema
+USER user
+
 RUN west init
 
 # Checkout Zephyr version
@@ -11,10 +15,6 @@ RUN git -C /workdir/zephyr fetch --all && \
 RUN west update
 
 # Install missing Python dependencies required by Zephyr
-USER root
-RUN pip install jsonschema
-USER user
-
 COPY workdir/ /workdir/
 
 WORKDIR /workdir
