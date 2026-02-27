@@ -2,10 +2,11 @@
 	"name": "zephyr",
 	"dockerComposeFile": "compose.devcontainer.yaml",
 	"service": "zephyr",
-	"workspaceFolder": "/workspace",
+	"workspaceFolder": "/workspace/zephyr-application/workdir",
 	"mounts": [
 		"source=${localWorkspaceFolder},target=/workspace,type=bind"
 	],
+    "updateRemoteUserUID": true,
 	"runServices": [
 		"zephyr"
 	],
