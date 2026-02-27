@@ -18,6 +18,10 @@ services:
     extends:
       file: zephyr-application/compose.yaml
       service: zephyr
+    build:
+      args:
+        PLATFORM: ${PLATFORM:-stm32mp257}
+        REMOTEPROC: ${REMOTEPROC:-m33}
 
 volumes:
   ollama-data:
@@ -29,6 +33,12 @@ x-topo:
   features:
     - "remoteproc-runtime"
   args:
+    PLATFORM:
+      description: The platform to build for. Must be either 'stm32mp257' or 'imx93'.
+      default: stm32mp257
+    REMOTEPROC:
+      description: The remoteproc device to use. Must be 'm33' if the stm32 board is used, or 'imx-rproc' if the imx93 board is used.
+      default: m33
     LLM_PROMPT_PRESET:
       description: |
         The writing style for the LLM to use when generating messages about the light bulb state. Can be any style description (e.g., "shakespearean english", "pirate", "haiku", "detective noir").

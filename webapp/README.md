@@ -20,8 +20,8 @@ A user-space Linux Python web server that monitors `/dev/ttyRPMSG0` for switch s
 ### 1. Build and transfer the Docker Image
 
 ```bash
-podman build -t webapp .
-podman save webapp | ssh root@remotedevice 'podman load'
+docker build -t webapp .
+docker save webapp | ssh root@remotedevice 'docker load'
 ```
 
 ### 2. Ensure the remote processor application is running, and /dev/ttyRPMSG0 exists
@@ -33,9 +33,9 @@ In order to bind the device, `/dev/ttyRPMSG0` must exist.
 Run the container with access to the `/dev/ttyRPMSG0` device:
 
 ```bash
-podman run --device=/dev/ttyRPMSG0:/dev/ttyRPMSG0 -p 3000:3000 webapp:latest
+docker run --device=/dev/ttyRPMSG0:/dev/ttyRPMSG0 -p 3000:3000 webapp:latest
 ```
-The `--device=/dev/ttyRPMSG0:/dev/ttyRPMSG0` flag gives the container access to the device, but podman must be run as root.
+The `--device=/dev/ttyRPMSG0:/dev/ttyRPMSG0` flag gives the container access to the device, but docker must be run as root.
 
 ### 4. Access the Web Interface
 
@@ -53,7 +53,7 @@ http://<your-host-ip>:3000
 
 ## Running Without Docker (Development)
 
-If you want to run it directly without Podman:
+If you want to run it directly without Docker:
 
 ### 1. Install `uv`
 

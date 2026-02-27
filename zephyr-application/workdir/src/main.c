@@ -385,7 +385,7 @@ void openamp_init(void *arg1, void *arg2, void *arg3)
 #endif
 
 	/* Process initial virtio notifications to ensure device is ready */
-	for (int i = 0; i < 10; i++) { /* TODO: This was done in debug and probably isn't needed */
+	for (int i = 0; i < 10; i++) {
 		if (k_sem_take(&data_sem, K_MSEC(100)) == 0) {
 			rproc_virtio_notified(rvdev.vdev, VRING1_ID);
 		}
