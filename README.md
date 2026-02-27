@@ -4,8 +4,6 @@
 
 Reads a switch over GPIO pins on an M class cpu, reports switch state over Remoteproc Message, then a web application on the A class reads this and displays a lightbulb in either the on or off state. The lightbulb state is described by an LLM in any user-specified style.
 
-Features: remoteproc-runtime
-
 ## Usage
 
 The easiest way to deploy is using `topo`. Download and install `topo` from [here](https://github.com/arm/topo)
