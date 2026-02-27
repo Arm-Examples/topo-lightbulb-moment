@@ -10,12 +10,12 @@ The easiest way to deploy is using `topo`. Download and install `topo` from [her
 
 ### Clone the project:
 ```bash
-topo clone lightbulb https://github.com/Arm-Examples/topo-lightbulb-moment.git
+topo clone ./lightbulb https://github.com/Arm-Examples/topo-lightbulb-moment.git
 ```
 
 Or to use a custom prompt non-interactively:
 ```bash
-topo clone lightbulb https://github.com/Arm-Examples/topo-lightbulb-moment.git -- LLM_PROMPT_PRESET="pirate"
+topo clone ./lightbulb https://github.com/Arm-Examples/topo-lightbulb-moment.git -- LLM_PROMPT_PRESET="pirate"
 ```
 
 You can use any style description (e.g., "pirate", "shakespearean english", "haiku", "detective noir").
