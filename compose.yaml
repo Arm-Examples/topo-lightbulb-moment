@@ -30,6 +30,8 @@ volumes:
 x-topo:
   name: "Lightbulb moment"
   description: "Reads a switch over GPIO pins on an M class cpu, reports switch state over Remoteproc Message, then a web application on the A class reads this and displays a lightbulb in either the on or off state. The lightbulb state is described by an LLM in any user-specified style."
+  features:
+    - "remoteproc-runtime"
   args:
     PLATFORM:
       description: The platform to build for. Must be either 'stm32mp257' or 'imx93'.
