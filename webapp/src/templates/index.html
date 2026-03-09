@@ -72,10 +72,176 @@
                 line-height: 1.5;
                 transition: opacity 0.3s ease;
             }
+
+            .overlay-active .state-label,
+            .overlay-active .llm-message {
+                visibility: hidden;
+            }
+
+            /* Pinout overlay */
+            .pinout-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 100;
+                transition: opacity 0.5s ease;
+            }
+
+            .pinout-overlay.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .pinout-card {
+                text-align: center;
+                color: #fff;
+                padding: 40px;
+            }
+
+            .pinout-card h2 {
+                font-size: 22px;
+                margin: 0 0 6px;
+            }
+
+            .pinout-card .subtitle {
+                color: #999;
+                font-size: 14px;
+                margin-bottom: 32px;
+            }
+
+            .pin-grid {
+                display: inline-block;
+            }
+
+            .pin-row {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                margin: 7px 0;
+            }
+
+            .pin {
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: #555;
+                border: 2px solid #777;
+                flex-shrink: 0;
+            }
+
+            .pin.highlight {
+                background: #b45309;
+                border-color: #f59e0b;
+                box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+            }
+
+            .pin-label {
+                font-size: 11px;
+                color: #666;
+                width: 60px;
+                text-align: right;
+                font-family: monospace;
+            }
+
+            .pin-label.right {
+                text-align: left;
+            }
+
+            .pin-label.highlight {
+                color: #f59e0b;
+                font-weight: bold;
+            }
+
+            .pinout-instruction {
+                margin-top: 28px;
+                font-size: 15px;
+                color: #ccc;
+                max-width: 360px;
+                margin-left: auto;
+                margin-right: auto;
+                line-height: 1.6;
+            }
+
+            .pinout-instruction strong {
+                color: #f59e0b;
+            }
+
+            .pinout-waiting {
+                margin-top: 18px;
+                font-size: 13px;
+                color: #666;
+            }
+
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.4; }
+            }
+
+            .pinout-waiting {
+                animation: pulse 2s ease-in-out infinite;
+            }
+
+            /* Jumper wire animation */
+            .jumper-svg {
+                position: absolute;
+                top: 0;
+                left: 0;
+                pointer-events: none;
+            }
+
+            @keyframes jumperDrop {
+                0%, 30% { opacity: 0; transform: translateY(-18px); }
+                60% { opacity: 1; transform: translateY(-3px); }
+                75%, 100% { opacity: 1; transform: translateY(0); }
+            }
+
+            @keyframes jumperPulse {
+                0%, 100% { filter: drop-shadow(0 0 3px rgba(245,158,11,0.3)); }
+                50% { filter: drop-shadow(0 0 10px rgba(245,158,11,0.7)); }
+            }
+
+            .jumper-wire {
+                animation: jumperDrop 2.5s ease-out forwards;
+            }
+
+            .jumper-wire.placed {
+                animation: jumperPulse 2s ease-in-out infinite;
+            }
+
+            /* Confetti */
+            .confetti-piece {
+                position: fixed;
+                width: 10px;
+                height: 10px;
+                z-index: 200;
+                pointer-events: none;
+            }
+
+            @keyframes confettiFall {
+                0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+            }
         </style>
     </head>
     <body>
-        <div class="container">
+        <!-- Pinout overlay -->
+        <div class="pinout-overlay" id="pinout-overlay">
+            <div class="pinout-card">
+                <h2>GPIO Pin Setup</h2>
+                <p class="subtitle">Bridge these two pins to get started</p>
+                <div class="pin-grid" id="pin-grid"></div>
+                <p class="pinout-instruction">
+                    Bridge <strong>GPIOA_1</strong> to the adjacent <strong>GND</strong> pin
+                    (4th row from the top) using a jumper wire.
+                </p>
+                <p class="pinout-waiting">Waiting for pin bridge...</p>
+            </div>
+        </div>
+
+        <div class="container overlay-active" id="main-container">
             <div id="connection-status" class="connection-status disconnected">
                 Disconnected
             </div>
@@ -90,49 +256,140 @@
         </div>
 
         <script>
-            // Handle websocket connection
+            // --- Pinout diagram ---
+            const HIGHLIGHT_ROW = 3; // 4th from top (0-indexed)
+            const pinLabelsLeft  = ["3V3","5V","GPIO_2","GPIOA_1","GPIO_4","GPIO_5","GND","GPIO_7","GPIO_8","3V3"];
+            const pinLabelsRight = ["5V","GND","GPIO_3","GND","GPIO_6","GPIO_9","GPIO_10","GPIO_11","GND","GND"];
+
+            const pinGrid = document.getElementById("pin-grid");
+            let gridHTML = "";
+            for (let r = 0; r < pinLabelsLeft.length; r++) {
+                const hl = r === HIGHLIGHT_ROW;
+                gridHTML += `<div class="pin-row">`;
+                gridHTML += `<span class="pin-label ${hl ? "highlight" : ""}">${pinLabelsLeft[r]}</span>`;
+                gridHTML += `<div class="pin ${hl ? "highlight" : ""}" data-row="${r}" data-col="0"></div>`;
+                gridHTML += `<div class="pin ${hl ? "highlight" : ""}" data-row="${r}" data-col="1"></div>`;
+                gridHTML += `<span class="pin-label right ${hl ? "highlight" : ""}">${pinLabelsRight[r]}</span>`;
+                gridHTML += `</div>`;
+            }
+            pinGrid.innerHTML = gridHTML;
+
+            // Draw jumper wire SVG between highlighted pins
+            requestAnimationFrame(() => {
+                const leftPin  = pinGrid.querySelector(`.pin[data-row="${HIGHLIGHT_ROW}"][data-col="0"]`);
+                const rightPin = pinGrid.querySelector(`.pin[data-row="${HIGHLIGHT_ROW}"][data-col="1"]`);
+                if (!leftPin || !rightPin) return;
+
+                const gridRect  = pinGrid.getBoundingClientRect();
+                const lRect = leftPin.getBoundingClientRect();
+                const rRect = rightPin.getBoundingClientRect();
+
+                const lx = lRect.left - gridRect.left + lRect.width / 2;
+                const ly = lRect.top  - gridRect.top  + lRect.height / 2;
+                const rx = rRect.left - gridRect.left + rRect.width / 2;
+                const ry = rRect.top  - gridRect.top  + rRect.height / 2;
+                const mx = (lx + rx) / 2;
+                const my = ly - 16;
+
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.classList.add("jumper-svg");
+                svg.setAttribute("viewBox", `0 0 ${gridRect.width} ${gridRect.height}`);
+                svg.style.width  = gridRect.width + "px";
+                svg.style.height = gridRect.height + "px";
+                svg.innerHTML = `
+                    <g class="jumper-wire" id="jumper-wire">
+                        <path d="M ${lx} ${ly} Q ${mx} ${my - 2}, ${rx} ${ry}"
+                              stroke="rgba(0,0,0,0.3)" stroke-width="6" fill="none"
+                              stroke-linecap="round" transform="translate(1,2)"/>
+                        <path d="M ${lx} ${ly} Q ${mx} ${my}, ${rx} ${ry}"
+                              stroke="#f59e0b" stroke-width="5" fill="none"
+                              stroke-linecap="round"/>
+                        <path d="M ${lx} ${ly} Q ${mx} ${my + 1}, ${rx} ${ry}"
+                              stroke="#fbbf24" stroke-width="2" fill="none"
+                              stroke-linecap="round" opacity="0.6"/>
+                        <circle cx="${lx}" cy="${ly}" r="4" fill="#d97706"/>
+                        <circle cx="${rx}" cy="${ry}" r="4" fill="#d97706"/>
+                    </g>
+                `;
+                pinGrid.style.position = "relative";
+                pinGrid.appendChild(svg);
+
+                setTimeout(() => {
+                    const wire = document.getElementById("jumper-wire");
+                    if (wire) wire.classList.add("placed");
+                }, 2500);
+            });
+
+            // --- Confetti burst ---
+            function launchConfetti() {
+                const colors = ["#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#8b5cf6", "#ec4899"];
+                for (let i = 0; i < 80; i++) {
+                    const piece = document.createElement("div");
+                    piece.classList.add("confetti-piece");
+                    piece.style.left = Math.random() * 100 + "vw";
+                    piece.style.top = "-10px";
+                    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+                    piece.style.width  = (6 + Math.random() * 8) + "px";
+                    piece.style.height = (6 + Math.random() * 8) + "px";
+                    piece.style.animation = `confettiFall ${1.5 + Math.random() * 2}s ease-out ${Math.random() * 0.5}s forwards`;
+                    document.body.appendChild(piece);
+                    piece.addEventListener("animationend", () => piece.remove());
+                }
+            }
+
+            // --- Overlay dismiss ---
+            let pinoutDismissed = false;
+            function dismissPinout() {
+                if (pinoutDismissed) return;
+                pinoutDismissed = true;
+                launchConfetti();
+                document.getElementById("main-container").classList.remove("overlay-active");
+                const overlay = document.getElementById("pinout-overlay");
+                setTimeout(() => overlay.classList.add("hidden"), 400);
+            }
+
+            // --- Socket.io ---
             const socket = io();
+            let lastKnownState = null;
 
             const statusImage = document.getElementById("status-image");
             const stateLabel = document.getElementById("state-label");
             const llmMessage = document.getElementById("llm-message");
-            const connectionStatus =
-                document.getElementById("connection-status");
+            const connectionStatus = document.getElementById("connection-status");
 
-            // Handle connection
             socket.on("connect", () => {
                 console.log("Connected to server");
                 connectionStatus.textContent = "Connected";
                 connectionStatus.className = "connection-status connected";
             });
 
-            // Handle disconnection
             socket.on("disconnect", () => {
                 console.log("Disconnected from server");
                 connectionStatus.textContent = "Disconnected";
                 connectionStatus.className = "connection-status disconnected";
             });
 
-            // Handle updates
             socket.on("state_update", (data) => {
                 console.log("State update:", data.state);
                 const state = data.state;
+                const stateChanged = lastKnownState !== null && state !== lastKnownState;
+                lastKnownState = state;
 
-                // Update
                 statusImage.src = `/static/assets/${state}.png`;
                 stateLabel.textContent = state;
 
                 statusImage.style.opacity = "0.5";
-                setTimeout(() => {
-                    statusImage.style.opacity = "1";
-                }, 150);
+                setTimeout(() => { statusImage.style.opacity = "1"; }, 150);
+
+                // Dismiss pinout overlay only on an actual state change
+                if (stateChanged && !pinoutDismissed) {
+                    dismissPinout();
+                }
             });
 
-            // Handle LLM message updates
             socket.on("message_update", (data) => {
                 console.log("Message update:", data.message);
-
-                // Fade out, update, fade in
                 llmMessage.style.opacity = "0";
                 setTimeout(() => {
                     llmMessage.textContent = data.message;
