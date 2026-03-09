@@ -3,6 +3,7 @@
 > This project is a [Topo](https://github.com/arm/topo) template and follows the [Topo Template Format Specification](https://github.com/arm/Topo-Template-Format).
 
 Reads a switch over GPIO pins on an M class cpu, reports switch state over Remoteproc Message, then a web application on the A class reads this and displays a lightbulb in either the on or off state. The lightbulb state is described by an LLM in any user-specified style.
+
 ## Requirements
 
 - Either an stm32mp257 or imx93 board running Linux, with SSH root access and docker installed.
