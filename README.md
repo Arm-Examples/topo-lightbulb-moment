@@ -15,7 +15,7 @@ Before deploying to your board, you must ensure the board is set up.
 
 The imx93 may crash when you start the m-class core using remoteproc. You need to `run prepare_mcore` in the u-boot menu, [guide here](https://github.com/arm/remoteproc-runtime/blob/main/docs/IMX93_WORKAROUNDS.md).
 
-### STM32MP257 setup
+### STM32MP257 setup
 
 The stm32 may need you to stop the pre-existing demo program running on the m-core.
 You can ensure both cores are stopped using this ssh command:
@@ -36,14 +36,9 @@ The clone step will ask you for the following build arguments:
 - `REMOTEPROC`: either `m33` (for stm32mp257) or `imx-rproc` (for imx93)
 - `LLM_PROMPT_PRESET`: any style description (e.g., "pirate", "shakespearean english", "haiku", "detective noir")
 
-Set args interactively (recommended):
+Clone and set arguments:
 ```bash
 topo clone ./lightbulb https://github.com/Arm-Examples/topo-lightbulb-moment.git
-```
-
-Or set args non-interactively:
-```bash
-topo clone ./lightbulb https://github.com/Arm-Examples/topo-lightbulb-moment.git -- LLM_PROMPT_PRESET="pirate" REMOTEPROC="m33" PLATFORM="stm32mp257"
 ```
 
 Topo uses [remoteproc-runtime](https://github.com/arm/remoteproc-runtime) to deploy containers to remote processors.
