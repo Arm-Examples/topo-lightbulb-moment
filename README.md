@@ -29,7 +29,7 @@ Note: if nothing is currently running on the cores, you will see "Invalid argume
 
 The easiest way to deploy is using `topo`. Install it by following the instructions at [github.com/arm/topo](https://github.com/arm/topo).
 
-### Clone the project:
+### Clone the project using `topo`
 
 The clone step will ask you for the following build arguments:
 - `PLATFORM`: either `stm32mp257` or `imx93`
