@@ -8,8 +8,7 @@ Reads a switch over GPIO pins on an M class cpu, reports switch state over Remot
 
 - Either an stm32mp257 or imx93 board running Linux, with SSH root access and docker installed.
 - ~15GB free disk space on the build machine (the Zephyr build image alone is over 5GB).
-
-Before deploying to your board, you must ensure the board is set up.
+- Before deploying to your board, you must ensure the board is set up (see below).
 
 ### IMX93 setup
 
