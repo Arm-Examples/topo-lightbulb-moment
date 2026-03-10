@@ -8,8 +8,7 @@ Reads a switch over GPIO pins on an M class cpu, reports switch state over Remot
 
 - Either an stm32mp257 or imx93 board running Linux, with SSH root access and docker installed.
 - ~15GB free disk space on the build machine (the Zephyr build image alone is over 5GB).
-
-Before deploying to your board, you must ensure the board is set up.
+- Before deploying to your board, you must ensure the board is set up (see below).
 
 ### IMX93 setup
 
@@ -29,7 +28,7 @@ Note: if nothing is currently running on the cores, you will see "Invalid argume
 
 The easiest way to deploy is using `topo`. Install it by following the instructions at [github.com/arm/topo](https://github.com/arm/topo).
 
-### Clone the project:
+### Clone the project using `topo`
 
 The clone step will ask you for the following build arguments:
 - `PLATFORM`: either `stm32mp257` or `imx93`
