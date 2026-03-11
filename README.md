@@ -29,6 +29,8 @@ The i.MX93 board requires a one-time U-Boot configuration to prepare the Cortex-
 
 The easiest way to deploy is using `topo`. Install it by following the instructions at [github.com/arm/topo](https://github.com/arm/topo).
 
+In the commands below, `<user@hostname>` refers to the SSH address of your STM32MP257 or i.MX93 board.
+
 ### Clone the project using `topo`
 
 The clone step will ask you for the following build arguments:
@@ -47,7 +49,7 @@ Topo uses [remoteproc-runtime](https://github.com/arm/remoteproc-runtime) to dep
 If it is not already installed, you can install it using topo:
 
 ```bash
-topo install remoteproc-runtime --target <ip-address-of-target>
+topo install remoteproc-runtime --target <user@hostname>
 ```
 
 ### Build and deploy the project
@@ -56,5 +58,5 @@ Note: the first build will download the Zephyr toolchain Docker image and other 
 
 ```bash
 cd lightbulb
-topo deploy --target <ip-address-of-target>
+topo deploy --target <user@hostname>
 ```
