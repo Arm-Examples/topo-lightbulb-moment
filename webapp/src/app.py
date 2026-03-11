@@ -190,6 +190,8 @@ def index():
     """Serve the main page."""
     return render_template("index.html", initial_state=current_state, initial_message=current_message)
 
+
+
 @socketio.on("connect")
 def handle_connect():
     """Handle client connection - send current state."""
