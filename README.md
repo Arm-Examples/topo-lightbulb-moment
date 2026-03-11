@@ -31,6 +31,23 @@ The easiest way to deploy is using `topo`. Install it by following the instructi
 
 In the commands below, `<user@hostname>` refers to the SSH address of your STM32MP257 or i.MX93 board.
 
+### Check the target's health using `topo`
+
+Check the target's health and fix any issues if necessary:
+```bash
+topo health --target <user@hostname>
+```
+
+If remoteproc-runtime is unavailable, you can install it following these [instructions](./README.md#install-remoteproc-runtime-on-the-target-using-topo)
+
+### Install remoteproc-runtime on the target using `topo`
+
+Topo uses [remoteproc-runtime](https://github.com/arm/remoteproc-runtime) to deploy containers to remote processors.
+If it is not already installed, you can install it using topo:
+```bash
+topo install remoteproc-runtime --target <user@hostname>
+```
+
 ### Clone the project using `topo`
 
 The clone step will ask you for the following build arguments:
