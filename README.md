@@ -16,7 +16,7 @@ Depending on the Linux image your board is running, you may need to stop a pre-e
 You can ensure both cores are stopped using this SSH command:
 
 ```bash
-ssh root@<target hostname> 'echo stop > /sys/class/remoteproc/remoteproc1/state && echo stop > /sys/class/remoteproc/remoteproc0/state'
+ssh root@<target hostname> 'echo stop > /sys/class/remoteproc/remoteproc1/state; echo stop > /sys/class/remoteproc/remoteproc0/state'
 ```
 
 Note: if nothing is currently running on the cores, you will see "Invalid argument" errors — this is safe to ignore.
