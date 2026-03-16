@@ -42,7 +42,7 @@ The clone step will ask you for the following build arguments:
 Clone and set arguments:
 
 ```bash
-topo clone ./lightbulb https://github.com/Arm-Examples/topo-lightbulb-moment.git
+topo clone git@github.com:Arm-Examples/topo-lightbulb-moment.git
 ```
 
 Topo uses [remoteproc-runtime](https://github.com/arm/remoteproc-runtime) to deploy containers to remote processors.
@@ -57,6 +57,6 @@ topo install remoteproc-runtime --target <user@hostname>
 Note: the first build will download the Zephyr toolchain Docker image and other dependencies (~15GB total), so it may take a while.
 
 ```bash
-cd lightbulb
+cd topo-lightbulb-moment
 topo deploy --target <user@hostname>
 ```
