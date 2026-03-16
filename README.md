@@ -42,7 +42,7 @@ The clone step will ask you for the following build arguments:
 Clone and set arguments:
 
 ```bash
-topo clone https://github.com/Arm-Examples/topo-lightbulb-moment.git
+topo clone git@github.com:Arm-Examples/topo-lightbulb-moment.git
 ```
 
 Topo uses [remoteproc-runtime](https://github.com/arm/remoteproc-runtime) to deploy containers to remote processors.
