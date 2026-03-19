@@ -1,6 +1,5 @@
 services:
   ollama:
-    container_name: ollama
     build:
       context: .
       dockerfile: Dockerfile
