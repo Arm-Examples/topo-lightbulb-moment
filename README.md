@@ -23,7 +23,7 @@ Note: if nothing is currently running on the cores, you will see "Invalid argume
 
 ### i.MX93 setup
 
-The i.MX93 board requires a one-time U-Boot configuration to prepare the Cortex-M core for remoteproc. Without this, the board's remoteproc drivers may not start correctly. Run `prepare_mcore` in the U-Boot menu before first use — see the [setup guide](https://github.com/arm/remoteproc-runtime/blob/main/docs/IMX93_WORKAROUNDS.md) for details.
+The i.MX93 board requires a one-time U-Boot configuration to prepare the Cortex-M core for remoteproc. Without this, the board's remoteproc drivers may not start correctly. Run `prepare_mcore` in the U-Boot menu before first use — see the [setup guide](https://github.com/arm/remoteproc-runtime/blob/main/docs/IMX93_WORKAROUNDS.md#my-board-stops-responding-when-i-start-the-m-class-core-using-remoteproc) for details.
 
 ## Usage
 
