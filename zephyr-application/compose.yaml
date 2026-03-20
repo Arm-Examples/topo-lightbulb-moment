@@ -5,5 +5,3 @@ services:
       args:
         PLATFORM: ${PLATFORM:-stm32mp257}
     runtime: io.containerd.remoteproc.v1
-    annotations:
-      remoteproc.name: ${REMOTEPROC:-m33}

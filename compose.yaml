@@ -21,7 +21,9 @@ services:
     build:
       args:
         PLATFORM: ${PLATFORM:-stm32mp257}
-        REMOTEPROC: ${REMOTEPROC:-m33}
+        REMOTEPROC: &remoteproc ${REMOTEPROC:-m33}
+    annotations:
+      remoteproc.name: *remoteproc
 
 volumes:
   ollama-data:
