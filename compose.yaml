@@ -13,6 +13,7 @@ services:
     build:
       args:
         LLM_PROMPT_PRESET: "shakespearean english"
+        PLATFORM: ${PLATFORM:-stm32mp257}
 
   zephyr:
     extends:

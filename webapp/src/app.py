@@ -1,7 +1,7 @@
 import os
 import threading
 import time
-from typing import Dict, Literal
+from typing import Any, Dict, Literal
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 import requests
@@ -19,6 +19,32 @@ MESSAGE_INTERVAL = int(os.environ.get("MESSAGE_INTERVAL", "10"))
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://ollama:11434")
 LLM_PROMPT_PRESET = os.environ.get("LLM_PROMPT_PRESET", "modern english")
 MODEL_NAME = "smollm:135m"
+DEFAULT_PLATFORM = "stm32mp257"
+PINOUT_CONFIGS: Dict[str, Dict[str, Any]] = {
+    "stm32mp257": {
+        "platform_name": "STM32MP257",
+        "target_gpio": "GPIOA_1",
+        "ground_gpio": "GND",
+        "highlight_row": 3,
+        "row_description": "4th row from the top",
+        "labels_left": ["3V3", "5V", "GPIO_2", "GPIOA_1", "GPIO_4", "GPIO_5", "GND", "GPIO_7", "GPIO_8", "3V3"],
+        "labels_right": ["5V", "GND", "GPIO_3", "GND", "GPIO_6", "GPIO_9", "GPIO_10", "GPIO_11", "GND", "GND"],
+    },
+    "imx93": {
+        "platform_name": "i.MX93",
+        "target_gpio": "GPIO_3",
+        "ground_gpio": "GND",
+        "highlight_row": 2,
+        "row_description": "3rd row from the top",
+        "labels_left": ["3V3", "GPIO_2", "GPIO_3", "GPIO_4", "GND", "GPIO_5", "GND", "GPIO_17", "GPIO_27", "GPIO_22"],
+        "labels_right": ["5V", "5V", "GND", "GPIO_14", "GPIO_15", "GPIO_18", "GND", "GPIO_23", "GPIO_24", "GND"],
+    },
+}
+
+
+def get_pinout_config() -> Dict[str, Any]:
+    platform = os.environ.get("PLATFORM", DEFAULT_PLATFORM).lower()
+    return PINOUT_CONFIGS.get(platform, PINOUT_CONFIGS[DEFAULT_PLATFORM])
 
 
 def generate_llm_message(state: Literal["on", "off"]) -> str:
@@ -188,7 +214,12 @@ def monitor_rpmsgtty():
 @app.route("/")
 def index():
     """Serve the main page."""
-    return render_template("index.html", initial_state=current_state, initial_message=current_message)
+    return render_template(
+        "index.html",
+        initial_state=current_state,
+        initial_message=current_message,
+        pinout=get_pinout_config(),
+    )
 
 
 
