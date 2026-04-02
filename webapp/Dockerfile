@@ -1,6 +1,7 @@
 FROM ghcr.io/astral-sh/uv:python3.14-bookworm-slim
 
 ARG LLM_PROMPT_PRESET
+ARG PLATFORM
 
 WORKDIR /app
 
@@ -17,6 +18,7 @@ COPY src/static/ static/
 
 ENV PATH="/app/.venv/bin:${PATH}"
 ENV LLM_PROMPT_PRESET="${LLM_PROMPT_PRESET}"
+ENV PLATFORM="${PLATFORM}"
 
 EXPOSE 3000
 

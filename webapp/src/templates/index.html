@@ -234,8 +234,8 @@
                 <p class="subtitle">Bridge these two pins to get started</p>
                 <div class="pin-grid" id="pin-grid"></div>
                 <p class="pinout-instruction">
-                    Bridge <strong>GPIOA_1</strong> to the adjacent <strong>GND</strong> pin
-                    (4th row from the top) using a jumper wire.
+                    Bridge <strong>{{ pinout.target_gpio }}</strong> to the adjacent <strong>{{ pinout.ground_gpio }}</strong> pin
+                    ({{ pinout.row_description }}) using a jumper wire.
                 </p>
                 <p class="pinout-waiting">Waiting for pin bridge...</p>
             </div>
@@ -257,9 +257,9 @@
 
         <script>
             // --- Pinout diagram ---
-            const HIGHLIGHT_ROW = 3; // 4th from top (0-indexed)
-            const pinLabelsLeft  = ["3V3","5V","GPIO_2","GPIOA_1","GPIO_4","GPIO_5","GND","GPIO_7","GPIO_8","3V3"];
-            const pinLabelsRight = ["5V","GND","GPIO_3","GND","GPIO_6","GPIO_9","GPIO_10","GPIO_11","GND","GND"];
+            const HIGHLIGHT_ROW = {{ pinout.highlight_row }};
+            const pinLabelsLeft  = {{ pinout.labels_left | tojson }};
+            const pinLabelsRight = {{ pinout.labels_right | tojson }};
 
             const pinGrid = document.getElementById("pin-grid");
             let gridHTML = "";
