@@ -1,13 +1,30 @@
 # topo-ambient-zephyr
 
-A minimal STM32MP25x Ambient zephyr firmware with an openamp remoteproc application.
-The application reads GPIO pin 'gpioa 1' to determine whether it is connected to ground, and reports over rpmsg tty either 'on' or 'off'
+A minimal Zephyr firmware with an OpenAMP remoteproc application for STM32MP257 and i.MX93 boards.
+The application reads a board-specific GPIO input to determine whether it is connected to ground, and reports over RPMsg TTY either `on` or `off`.
 
 ## Features
   - Uses Zephyr RTOS
-  - Builds for the `stm23mp257f_dk/stmp257fxx/m33` board by default
+  - Builds for the `stm32mp257f_dk/stm32mp257fxx/m33` board by default
+  - Supports `imx93_evk/mimx9352/m33` when `PLATFORM=imx93`
   - Dockerized multistage image for reproducible builds
   - Extensive debug logs and comments to assist with configuring this on other boards.
+
+## Board-specific configuration
+
+The GPIO input and remoteproc annotation depend on the target board:
+
+| Board | `PLATFORM` | Zephyr board target | `REMOTEPROC` | GPIO monitored |
+| --- | --- | --- | --- | --- |
+| STM32MP257 | `stm32mp257` | `stm32mp257f_dk/stm32mp257fxx/m33` | `m33` | `GPIOA_1` via `&gpioa 1` |
+| i.MX93 | `imx93` | `imx93_evk/mimx9352/m33` | `imx-rproc` | `GPIO2_IO3` via `&gpio2 3` |
+
+The GPIO definitions live in the board overlays:
+
+- [`workdir/boards/stm32mp257f/stm32mp257f_dk_stm32mp257fxx_m33.overlay`](./workdir/boards/stm32mp257f/stm32mp257f_dk_stm32mp257fxx_m33.overlay)
+- [`workdir/boards/imx93/nxp-frdm-imx93.overlay`](./workdir/boards/imx93/nxp-frdm-imx93.overlay)
+
+Use the SoC GPIO name from the table above and then map it to the physical board header using the board schematic or user manual.
 
 ## Dependencies
 The build is container-based; the host machine only needs the tools that
