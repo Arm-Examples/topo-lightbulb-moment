@@ -14,12 +14,14 @@ current_state = "off"
 current_message = "Initializing..."
 state_lock = threading.Lock()
 
-DEVICE_PATH = "/dev/ttyRPMSG0"
 MESSAGE_INTERVAL = int(os.environ.get("MESSAGE_INTERVAL", "10"))
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://ollama:11434")
 LLM_PROMPT_PRESET = os.environ.get("LLM_PROMPT_PRESET", "modern english")
 MODEL_NAME = "smollm:135m"
 DEFAULT_PLATFORM = "stm32mp257"
+PLATFORM = os.environ.get("PLATFORM", DEFAULT_PLATFORM).lower()
+DEVICE_PATH = "/dev/ttyRPMSG0" if PLATFORM == DEFAULT_PLATFORM else "/dev/ttyRPMSG1"
+
 PINOUT_CONFIGS: Dict[str, Dict[str, Any]] = {
     "stm32mp257": {
         "platform_name": "STM32MP257",
@@ -43,8 +45,7 @@ PINOUT_CONFIGS: Dict[str, Dict[str, Any]] = {
 
 
 def get_pinout_config() -> Dict[str, Any]:
-    platform = os.environ.get("PLATFORM", DEFAULT_PLATFORM).lower()
-    return PINOUT_CONFIGS.get(platform, PINOUT_CONFIGS[DEFAULT_PLATFORM])
+    return PINOUT_CONFIGS[PLATFORM]
 
 
 def generate_llm_message(state: Literal["on", "off"]) -> str:
