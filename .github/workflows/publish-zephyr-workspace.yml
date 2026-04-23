@@ -1,0 +1,44 @@
+name: Publish Zephyr workspace image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - zephyr-application/Dockerfile.workspace
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push workspace image
+        uses: docker/build-push-action@v6
+        with:
+          context: zephyr-application/
+          file: zephyr-application/Dockerfile.workspace
+          push: true
+          # Build natively on the runner (linux/amd64) - no QEMU needed.
+          # The workspace is used as a build-stage base only; the final Zephyr
+          # image target (linux/arm64) is handled by the app image workflow.
+          platforms: linux/amd64
+          tags: |
+            ghcr.io/${{ github.repository }}/zephyr-workspace:sdk-v0.28.0-zephyr-v4.3.0
+            ghcr.io/${{ github.repository }}/zephyr-workspace:latest
