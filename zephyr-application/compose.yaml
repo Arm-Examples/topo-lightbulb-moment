@@ -2,6 +2,17 @@ services:
   zephyr:
     build:
       context: .
+      # Pull the pre-built app image as a cache source. On a cache hit (workdir
+      # unchanged), docker compose build completes in seconds with no recompilation.
+      # On a cache miss, only west build reruns (~41s) since the workspace base
+      # image already has west init + west update baked in.
+      cache_from:
+        # Workspace image: cache for the expensive west init + west update layers.
+        # If available, these steps are instant even on a machine that has never built before.
+        - ghcr.io/arm-examples/topo-lightbulb-moment/zephyr-workspace:sdk-v0.28.0-zephyr-v4.3.0
+        # App image: cache for the COPY workdir + west build layers.
+        # If workdir is unchanged, the entire build resolves as a cache hit in seconds.
+        - ghcr.io/arm-examples/topo-lightbulb-moment/zephyr-${PLATFORM:-stm32mp257}:latest
       args:
         PLATFORM: ${PLATFORM:-stm32mp257}
     platform: linux/arm64
