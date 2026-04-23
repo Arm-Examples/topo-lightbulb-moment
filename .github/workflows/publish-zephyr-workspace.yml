@@ -19,6 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set repository name to lowercase
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -40,5 +43,5 @@ jobs:
           # image target (linux/arm64) is handled by the app image workflow.
           platforms: linux/amd64
           tags: |
-            ghcr.io/${{ github.repository }}/zephyr-workspace:sdk-v0.28.0-zephyr-v4.3.0
-            ghcr.io/${{ github.repository }}/zephyr-workspace:latest
+            ghcr.io/${{ env.REPO }}/zephyr-workspace:sdk-v0.28.0-zephyr-v4.3.0
+            ghcr.io/${{ env.REPO }}/zephyr-workspace:latest

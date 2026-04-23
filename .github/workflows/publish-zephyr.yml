@@ -24,6 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set repository name to lowercase
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -43,8 +46,8 @@ jobs:
           build-args: |
             PLATFORM=${{ matrix.platform }}
             BUILDKIT_INLINE_CACHE=1
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}/zephyr-${{ matrix.platform }}:latest
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.platform }}:latest
           cache-to: type=inline
           tags: |
-            ghcr.io/${{ github.repository }}/zephyr-${{ matrix.platform }}:latest
-            ghcr.io/${{ github.repository }}/zephyr-${{ matrix.platform }}:${{ github.sha }}
+            ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.platform }}:latest
+            ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.platform }}:${{ github.sha }}
