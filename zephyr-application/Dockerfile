@@ -1,4 +1,6 @@
-FROM zephyrprojectrtos/zephyr-build:v0.28.0 AS build
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
+FROM --platform=${BUILDPLATFORM} zephyrprojectrtos/zephyr-build:v0.28.0 AS build
 
 ARG PLATFORM=stm32mp257
 
@@ -41,7 +43,7 @@ RUN if [ "$PLATFORM" = "stm32mp257" ]; then \
     echo "Unknown PLATFORM: $PLATFORM. Use stm32mp257 or imx93" && exit 1; \
     fi
 
-FROM scratch
+FROM --platform=${TARGETPLATFORM:-linux/arm64} scratch
 COPY --from=build /tmp/zephyr.elf /zephyr.elf
 
 ENTRYPOINT [ "/zephyr.elf" ]

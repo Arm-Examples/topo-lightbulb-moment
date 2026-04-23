@@ -1,8 +1,5 @@
 FROM ghcr.io/astral-sh/uv:python3.14-bookworm-slim
 
-ARG LLM_PROMPT_PRESET
-ARG PLATFORM
-
 WORKDIR /app
 
 # Copy project metadata first to take advantage of caching
@@ -10,6 +7,9 @@ COPY pyproject.toml uv.lock ./
 
 # Install dependencies into the project-local virtual environment
 RUN uv sync --frozen --no-dev
+
+ARG LLM_PROMPT_PRESET
+ARG PLATFORM
 
 # Copy the application source
 COPY src/app.py .
