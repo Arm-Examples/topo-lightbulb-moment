@@ -8,6 +8,7 @@ USER root
 RUN pip install jsonschema
 USER user
 
+RUN for i in 1 2 3; do \
       west init && break; \
       echo "west init failed (attempt $i), cleaning up before retry..."; \
       rm -rf /workdir/.west; \
@@ -27,13 +28,11 @@ COPY workdir/ /workdir/
 
 WORKDIR /workdir
 
-# Apply patches (if needed)
 RUN if [ "$PLATFORM" = "stm32mp257" ]; then \
     cp boards/stm32mp257f/resource_table.ld . && \
     cd /workdir/zephyr && patch -p1 < /workdir/boards/stm32mp257f/ipm_stm32_ipcc.patch; \
     fi
 
-# Build
 RUN if [ "$PLATFORM" = "stm32mp257" ]; then \
     west build -b stm32mp257f_dk/stm32mp257fxx/m33 \
     -- -DCONF_FILE=boards/stm32mp257f/prj.conf \

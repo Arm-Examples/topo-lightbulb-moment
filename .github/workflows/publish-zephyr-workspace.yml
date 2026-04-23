@@ -10,12 +10,21 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       contents: read
       packages: write
 
     steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/share/swift
+          df -h
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -38,10 +47,7 @@ jobs:
           context: zephyr-application/
           file: zephyr-application/Dockerfile.workspace
           push: true
-          # Build natively on the runner (linux/amd64) - no QEMU needed.
-          # The workspace is used as a build-stage base only; the final Zephyr
-          # image target (linux/arm64) is handled by the app image workflow.
-          platforms: linux/amd64
+          platforms: linux/arm64
           tags: |
             ghcr.io/${{ env.REPO }}/zephyr-workspace:sdk-v0.28.0-zephyr-v4.3.0
             ghcr.io/${{ env.REPO }}/zephyr-workspace:latest

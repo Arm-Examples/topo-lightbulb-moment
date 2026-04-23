@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       contents: read
       packages: write
@@ -21,6 +21,15 @@ jobs:
         platform: [stm32mp257, imx93]
 
     steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/share/swift
+          df -h
+
       - name: Checkout
         uses: actions/checkout@v4
 
