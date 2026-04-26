@@ -3,10 +3,10 @@ services:
     build:
       context: .
       cache_from:
-        # Pre-built cache for the west workspace to save time on builds with modified source
         - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-workspace:sdk-v0.28.0-zephyr-v4.3.0
-        # Pre-built cache for entire Dockerfile to not require build if nothing is changed from main.
+        - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-workspace:sdk-v0.28.0-zephyr-v4.3.0-amd64
         - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-${PLATFORM:-stm32mp257}:latest
+        - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-${PLATFORM:-stm32mp257}:latest-amd64
       args:
         PLATFORM: ${PLATFORM:-stm32mp257}
     platform: linux/arm64
