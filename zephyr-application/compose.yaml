@@ -3,12 +3,14 @@ services:
     build:
       context: .
       cache_from:
+        - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-stm32mp257:buildcache-amd64-for-arm64
+        - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-imx93:buildcache-amd64-for-arm64
         - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-workspace:sdk-v0.28.0-zephyr-v4.3.0
         - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-workspace:sdk-v0.28.0-zephyr-v4.3.0-amd64
         - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-stm32mp257:latest
-        - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-stm32mp257:latest-amd64
+        - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-stm32mp257:latest-amd64-for-arm64
         - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-imx93:latest
-        - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-imx93:latest-amd64
+        - ghcr.io/arm-examples/test-topo-lightbulb/zephyr-imx93:latest-amd64-for-arm64
       args:
         PLATFORM: ${PLATFORM:-stm32mp257}
     platform: linux/arm64
