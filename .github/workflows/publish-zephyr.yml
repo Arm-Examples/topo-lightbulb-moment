@@ -21,16 +21,16 @@ jobs:
         include:
           - board: stm32mp257
             runner: ubuntu-latest
-            platform: linux/amd64
-            suffix: amd64
+            platform: linux/arm64
+            suffix: amd64-for-arm64
           - board: stm32mp257
             runner: ubuntu-24.04-arm
             platform: linux/arm64
             suffix: arm64
           - board: imx93
             runner: ubuntu-latest
-            platform: linux/amd64
-            suffix: amd64
+            platform: linux/arm64
+            suffix: amd64-for-arm64
           - board: imx93
             runner: ubuntu-24.04-arm
             platform: linux/arm64
@@ -67,8 +67,12 @@ jobs:
           build-args: |
             PLATFORM=${{ matrix.board }}
             BUILDKIT_INLINE_CACHE=1
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:latest-${{ matrix.suffix }}
-          cache-to: type=inline
+          cache-from: |
+            type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:buildcache-${{ matrix.suffix }}
+            type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:latest-${{ matrix.suffix }}
+          cache-to: |
+            type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:buildcache-${{ matrix.suffix }},mode=max
+            type=inline
           tags: ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:latest-${{ matrix.suffix }}
 
   merge:
@@ -101,5 +105,4 @@ jobs:
           docker buildx imagetools create \
             --tag ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:latest \
             --tag ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:${{ github.sha }} \
-            ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:latest-amd64 \
             ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:latest-arm64
