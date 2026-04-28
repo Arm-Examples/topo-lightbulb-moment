@@ -266,7 +266,7 @@ void main_loop(void *arg1, void *arg2, void *arg3)
 	ARG_UNUSED(arg2);
 	ARG_UNUSED(arg3);
 
-	int ret = 1;
+	int ret = 0;
 	const char *active_msg = "on\n";
 	int active_len = strlen(active_msg);
 
