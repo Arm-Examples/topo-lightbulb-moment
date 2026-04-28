@@ -17,7 +17,7 @@ RUN git -C /workdir/zephyr fetch --depth=1 origin refs/tags/v4.3.0 && \
 RUN --mount=type=cache,target=/git-cache \
     west update --path-cache /git-cache --narrow -o=--depth=1
 
-COPY --chown=user:user workdir/ /workdir/
+COPY workdir/ /workdir/
 
 WORKDIR /workdir
 
