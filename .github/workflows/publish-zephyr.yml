@@ -66,13 +66,10 @@ jobs:
           platforms: ${{ matrix.platform }}
           build-args: |
             PLATFORM=${{ matrix.board }}
-            BUILDKIT_INLINE_CACHE=1
           cache-from: |
             type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:buildcache-${{ matrix.suffix }},mode=max
-            type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:latest-${{ matrix.suffix }},mode=max
           cache-to: |
             type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:buildcache-${{ matrix.suffix }},mode=max
-            type=inline
           tags: ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:latest-${{ matrix.suffix }}
 
   merge:
