@@ -68,8 +68,9 @@ jobs:
             PLATFORM=${{ matrix.board }}
             BUILDKIT_INLINE_CACHE=1
           cache-from: |
-            type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:buildcache-${{ matrix.suffix }},mode=max
-            type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:latest-${{ matrix.suffix }},mode=max
+            type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:buildcache-${{ matrix.suffix }}
+            type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:latest-${{ matrix.suffix }}
+          # mode=max is needed for x86 so docker does not invalidate the per-layer cache of a higher level.
           cache-to: |
             type=registry,ref=ghcr.io/${{ env.REPO }}/zephyr-${{ matrix.board }}:buildcache-${{ matrix.suffix }},mode=max
             type=inline
