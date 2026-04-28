@@ -5,15 +5,17 @@ FROM --platform=${BUILDPLATFORM} zephyrprojectrtos/zephyr-build:v0.28.0 AS build
 ARG PLATFORM=stm32mp257
 
 USER root
-RUN pip install jsonschema
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install jsonschema
 USER user
 
 RUN west init
 
-RUN git -C /workdir/zephyr fetch --all && \
-    git -C /workdir/zephyr checkout tags/v4.3.0
+RUN git -C /workdir/zephyr fetch --depth=1 origin refs/tags/v4.3.0 && \
+    git -C /workdir/zephyr checkout FETCH_HEAD
 
-RUN west update
+RUN --mount=type=cache,target=/git-cache \
+    west update --path-cache /git-cache --narrow -o=--depth=1
 
 COPY workdir/ /workdir/
 
