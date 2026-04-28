@@ -8,21 +8,12 @@ USER root
 RUN pip install jsonschema
 USER user
 
-RUN for i in 1 2 3; do \
-      west init && break; \
-      echo "west init failed (attempt $i), cleaning up before retry..."; \
-      rm -rf /workdir/.west; \
-      sleep 15; \
-    done
+RUN west init
 
 RUN git -C /workdir/zephyr fetch --all && \
     git -C /workdir/zephyr checkout tags/v4.3.0
 
-RUN for i in 1 2 3; do \
-      west update && break; \
-      echo "west update failed (attempt $i), retrying..."; \
-      sleep 15; \
-    done
+RUN west update
 
 COPY workdir/ /workdir/
 
