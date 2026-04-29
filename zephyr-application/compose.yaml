@@ -4,4 +4,5 @@ services:
       context: .
       args:
         PLATFORM: ${PLATFORM:-stm32mp257}
+    platform: linux/arm64
     runtime: io.containerd.remoteproc.v1

@@ -1,31 +1,31 @@
-FROM zephyrprojectrtos/zephyr-build:v0.28.0 AS build
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
+FROM --platform=${BUILDPLATFORM} zephyrprojectrtos/zephyr-build:v0.28.0 AS build
 
 ARG PLATFORM=stm32mp257
 
 USER root
-RUN pip install jsonschema
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install jsonschema
 USER user
 
 RUN west init
 
-# Checkout Zephyr version
-RUN git -C /workdir/zephyr fetch --all && \
-    git -C /workdir/zephyr checkout tags/v4.3.0
+RUN git -C /workdir/zephyr fetch --depth=1 origin refs/tags/v4.3.0 && \
+    git -C /workdir/zephyr checkout FETCH_HEAD
 
-RUN west update
+RUN --mount=type=cache,target=/git-cache \
+    west update --path-cache /git-cache --narrow -o=--depth=1
 
-# Install missing Python dependencies required by Zephyr
-COPY workdir/ /workdir/
+COPY --chown=user:user workdir/ /workdir/
 
 WORKDIR /workdir
 
-# Apply patches (if needed)
 RUN if [ "$PLATFORM" = "stm32mp257" ]; then \
     cp boards/stm32mp257f/resource_table.ld . && \
     cd /workdir/zephyr && patch -p1 < /workdir/boards/stm32mp257f/ipm_stm32_ipcc.patch; \
     fi
 
-# Build
 RUN if [ "$PLATFORM" = "stm32mp257" ]; then \
     west build -b stm32mp257f_dk/stm32mp257fxx/m33 \
     -- -DCONF_FILE=boards/stm32mp257f/prj.conf \
@@ -41,7 +41,7 @@ RUN if [ "$PLATFORM" = "stm32mp257" ]; then \
     echo "Unknown PLATFORM: $PLATFORM. Use stm32mp257 or imx93" && exit 1; \
     fi
 
-FROM scratch
+FROM --platform=${TARGETPLATFORM:-linux/arm64} scratch
 COPY --from=build /tmp/zephyr.elf /zephyr.elf
 
 ENTRYPOINT [ "/zephyr.elf" ]
