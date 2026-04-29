@@ -2,7 +2,9 @@ services:
   zephyr:
     build:
       context: .
+      target: ${ZEPHYR_BUILD_TARGET:-cached}
       args:
         PLATFORM: ${PLATFORM:-stm32mp257}
+        PREBUILT_FIRMWARE_IMAGE: ghcr.io/arm-examples/test-topo-lightbulb/zephyr-application:latest-${PLATFORM:-stm32mp257}
     platform: linux/arm64
     runtime: io.containerd.remoteproc.v1

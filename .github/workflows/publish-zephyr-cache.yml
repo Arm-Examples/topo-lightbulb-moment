@@ -1,0 +1,60 @@
+name: Publish Zephyr Cache
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - publish-cached-images
+    paths:
+      - ".github/workflows/publish-zephyr-cache.yml"
+      - "zephyr-application/Dockerfile"
+      - "zephyr-application/workdir/**"
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/arm-examples/test-topo-lightbulb/zephyr-application
+
+jobs:
+  publish:
+    name: Publish ${{ matrix.platform }} firmware
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - stm32mp257
+          - imx93
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish firmware
+        uses: docker/build-push-action@v6
+        with:
+          context: zephyr-application
+          file: zephyr-application/Dockerfile
+          target: source
+          platforms: linux/arm64
+          push: true
+          build-args: |
+            PLATFORM=${{ matrix.platform }}
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest-${{ matrix.platform }}
+          cache-from: |
+            type=registry,ref=${{ env.IMAGE_NAME }}:buildcache-${{ matrix.platform }}
+          cache-to: |
+            type=registry,ref=${{ env.IMAGE_NAME }}:buildcache-${{ matrix.platform }},mode=max,image-manifest=true,compression=zstd

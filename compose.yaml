@@ -21,8 +21,10 @@ services:
       file: zephyr-application/compose.yaml
       service: zephyr
     build:
+      target: ${ZEPHYR_BUILD_TARGET:-cached}
       args:
         PLATFORM: ${PLATFORM:-stm32mp257}
+        PREBUILT_FIRMWARE_IMAGE: ghcr.io/arm-examples/test-topo-lightbulb/zephyr-application:latest-${PLATFORM:-stm32mp257}
         REMOTEPROC: &remoteproc ${REMOTEPROC:-m33}
     annotations:
       remoteproc.name: *remoteproc
