@@ -6,7 +6,6 @@ on:
       - main
     paths:
       - zephyr-application/**
-      - "!zephyr-application/Dockerfile.workspace"
   workflow_dispatch:
 
 jobs:
