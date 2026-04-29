@@ -20,12 +20,12 @@ RUN set -eux; \
 
 FROM ghcr.io/astral-sh/uv:python3.14-bookworm-slim
 
-ARG LLM_PROMPT_PRESET
-ARG PLATFORM
-
 WORKDIR /app
 
 COPY --from=dependencies /app/vendor /app/vendor
+
+ARG LLM_PROMPT_PRESET
+ARG PLATFORM
 
 COPY src/app.py .
 COPY src/templates/ templates/
