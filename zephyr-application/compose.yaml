@@ -4,7 +4,8 @@ services:
       context: .
       target: ${ZEPHYR_BUILD_TARGET:-cached}
       cache_from:
-        - type=registry,ref=ghcr.io/arm-examples/test-topo-lightbulb/zephyr-application:buildcache-${PLATFORM:-stm32mp257}
+        - type=registry,ref=ghcr.io/arm-examples/test-topo-lightbulb/zephyr-application:buildcache-${PLATFORM:-stm32mp257}-amd64
+        - type=registry,ref=ghcr.io/arm-examples/test-topo-lightbulb/zephyr-application:buildcache-${PLATFORM:-stm32mp257}-arm64
       args:
         PLATFORM: ${PLATFORM:-stm32mp257}
         PREBUILT_FIRMWARE_IMAGE: ghcr.io/arm-examples/test-topo-lightbulb/zephyr-application:latest-${PLATFORM:-stm32mp257}

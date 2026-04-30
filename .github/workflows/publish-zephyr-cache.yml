@@ -19,14 +19,19 @@ env:
 
 jobs:
   publish:
-    name: Publish ${{ matrix.platform }} firmware
-    runs-on: ubuntu-24.04
+    name: Publish ${{ matrix.platform }} ${{ matrix.host.name }} cache
+    runs-on: ${{ matrix.host.runner }}
     strategy:
       fail-fast: false
       matrix:
         platform:
           - stm32mp257
           - imx93
+        host:
+          - name: amd64
+            runner: ubuntu-24.04
+          - name: arm64
+            runner: ubuntu-24.04-arm
 
     steps:
       - name: Checkout
@@ -58,12 +63,12 @@ jobs:
           file: zephyr-application/Dockerfile
           target: source
           platforms: linux/arm64
-          push: true
+          push: ${{ matrix.host.name == 'amd64' }}
           build-args: |
             PLATFORM=${{ matrix.platform }}
           tags: |
             ${{ env.IMAGE_NAME }}:latest-${{ matrix.platform }}
           cache-from: |
-            type=registry,ref=${{ env.IMAGE_NAME }}:buildcache-${{ matrix.platform }}
+            type=registry,ref=${{ env.IMAGE_NAME }}:buildcache-${{ matrix.platform }}-${{ matrix.host.name }}
           cache-to: |
-            type=registry,ref=${{ env.IMAGE_NAME }}:buildcache-${{ matrix.platform }},mode=max,image-manifest=true,compression=zstd
+            type=registry,ref=${{ env.IMAGE_NAME }}:buildcache-${{ matrix.platform }}-${{ matrix.host.name }},mode=max,image-manifest=true,compression=zstd
