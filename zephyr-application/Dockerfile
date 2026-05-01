@@ -15,7 +15,6 @@ RUN git clone --depth=1 --branch v4.3.0 \
 RUN --mount=type=cache,target=/git-cache,uid=1000,gid=1000 \
     west update --narrow -o=--depth=1 --path-cache /git-cache
 
-# Install missing Python dependencies required by Zephyr
 COPY workdir/ /workdir/
 
 WORKDIR /workdir
