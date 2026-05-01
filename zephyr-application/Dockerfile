@@ -1,17 +1,14 @@
 ARG BUILDPLATFORM
-
-FROM --platform=${BUILDPLATFORM} zephyrprojectrtos/zephyr-build:v0.28.0 AS workspace
+FROM zephyrprojectrtos/zephyr-build:v0.28.0 AS workspace
 
 USER root
 RUN pip install jsonschema
 USER user
 
-# Shallow-clone zephyr at the required tag, then init workspace around it
 RUN git clone --depth=1 --branch v4.3.0 \
     https://github.com/zephyrproject-rtos/zephyr zephyr && \
     west init -l zephyr
 
-# Shallow-clone modules; reuse git objects across builds via cache mount
 RUN --mount=type=cache,target=/git-cache,uid=1000,gid=1000 \
     west update --narrow -o=--depth=1 --path-cache /git-cache
 
