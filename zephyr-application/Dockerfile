@@ -12,8 +12,9 @@ RUN west init
 RUN git -C /workdir/zephyr fetch --depth=1 origin tag v4.3.0 && \
     git -C /workdir/zephyr checkout tags/v4.3.0
 
-# Shallow-clone modules and only the resolved revision
-RUN west update --narrow -o=--depth=1
+# Shallow-clone modules; reuse git objects across builds via cache mount
+RUN --mount=type=cache,target=/git-cache,uid=1000,gid=1000 \
+    west update --narrow -o=--depth=1 --path-cache /git-cache
 
 # Install missing Python dependencies required by Zephyr
 COPY workdir/ /workdir/
