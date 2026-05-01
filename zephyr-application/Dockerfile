@@ -1,20 +1,21 @@
-FROM zephyrprojectrtos/zephyr-build:v0.28.0 AS build
-
-ARG PLATFORM=stm32mp257
+FROM zephyrprojectrtos/zephyr-build:v0.28.0 AS workspace
 
 USER root
 RUN pip install jsonschema
 USER user
 
-RUN west init
+RUN git clone --depth=1 --branch v4.3.0 \
+    https://github.com/zephyrproject-rtos/zephyr zephyr && \
+    west init -l zephyr
 
-# Checkout Zephyr version
-RUN git -C /workdir/zephyr fetch --all && \
-    git -C /workdir/zephyr checkout tags/v4.3.0
+RUN --mount=type=cache,target=/git-cache,uid=1000,gid=1000 \
+    west update --narrow -o=--depth=1 --path-cache /git-cache
 
-RUN west update
 
-# Install missing Python dependencies required by Zephyr
+FROM workspace AS build
+
+ARG PLATFORM=stm32mp257
+
 COPY workdir/ /workdir/
 
 WORKDIR /workdir
