@@ -1,15 +1,20 @@
-FROM zephyrprojectrtos/zephyr-build:v0.28.0 AS workspace
+FROM ghcr.io/embeddedcontainers/zephyr:arm-0.17.4SDK AS workspace
 
-USER root
-RUN pip install jsonschema
-USER user
+RUN --mount=type=cache,target=/var/cache/apt \
+    --mount=type=cache,target=/var/lib/apt \
+    apt-get update && apt-get install --no-install-recommends -y patch
+
+WORKDIR /workdir
 
 RUN git clone --depth=1 --branch v4.3.0 \
     https://github.com/zephyrproject-rtos/zephyr zephyr && \
     west init -l zephyr
 
-RUN --mount=type=cache,target=/git-cache,uid=1000,gid=1000 \
+RUN --mount=type=cache,target=/git-cache \
     west update --narrow -o=--depth=1 --path-cache /git-cache
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r zephyr/scripts/requirements-base.txt jsonschema
 
 
 FROM workspace AS build
