@@ -8,11 +8,12 @@ USER user
 
 RUN west init
 
-# Checkout Zephyr version
-RUN git -C /workdir/zephyr fetch --all && \
+# Shallow-fetch only the required tag instead of every ref
+RUN git -C /workdir/zephyr fetch --depth=1 origin tag v4.3.0 && \
     git -C /workdir/zephyr checkout tags/v4.3.0
 
-RUN west update
+# Shallow-clone modules and only the resolved revision
+RUN west update --narrow -o=--depth=1
 
 # Install missing Python dependencies required by Zephyr
 COPY workdir/ /workdir/
