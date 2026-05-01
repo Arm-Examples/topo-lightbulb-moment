@@ -1,5 +1,6 @@
 services:
   zephyr:
+    platform: linux/arm64
     build:
       context: .
       args:
