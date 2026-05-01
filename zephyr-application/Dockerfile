@@ -1,6 +1,4 @@
-FROM zephyrprojectrtos/zephyr-build:v0.28.0 AS build
-
-ARG PLATFORM=stm32mp257
+FROM zephyrprojectrtos/zephyr-build:v0.28.0 AS workspace
 
 USER root
 RUN pip install jsonschema
@@ -14,6 +12,11 @@ RUN git clone --depth=1 --branch v4.3.0 \
 # Shallow-clone modules; reuse git objects across builds via cache mount
 RUN --mount=type=cache,target=/git-cache,uid=1000,gid=1000 \
     west update --narrow -o=--depth=1 --path-cache /git-cache
+
+
+FROM workspace AS build
+
+ARG PLATFORM=stm32mp257
 
 COPY workdir/ /workdir/
 
