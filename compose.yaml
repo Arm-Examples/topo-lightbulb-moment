@@ -16,6 +16,7 @@ services:
         PLATFORM: ${PLATFORM:-stm32mp257}
 
   zephyr:
+    platform: linux/arm64
     extends:
       file: zephyr-application/compose.yaml
       service: zephyr

@@ -1,4 +1,5 @@
-FROM zephyrprojectrtos/zephyr-build:v0.28.0 AS workspace
+ARG BUILDPLATFORM
+FROM --platform=${BUILDPLATFORM} zephyrprojectrtos/zephyr-build:v0.28.0 AS workspace
 
 USER root
 RUN pip install jsonschema
