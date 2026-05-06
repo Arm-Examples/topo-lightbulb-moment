@@ -1,4 +1,5 @@
-FROM ghcr.io/embeddedcontainers/zephyr:arm-0.17.4SDK AS workspace
+ARG BUILDPLATFORM
+FROM --platform=${BUILDPLATFORM} ghcr.io/embeddedcontainers/zephyr:arm-0.17.4SDK AS workspace
 
 RUN --mount=type=cache,target=/var/cache/apt \
     --mount=type=cache,target=/var/lib/apt \
