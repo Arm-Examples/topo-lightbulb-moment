@@ -7,9 +7,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
 
 WORKDIR /workdir
 
-RUN mkdir -p manifest
-
-COPY west.yml /workdir/manifest/west.yml
+COPY west.yml manifest/west.yml
 
 RUN west init -l manifest
 
