@@ -7,9 +7,9 @@ RUN --mount=type=cache,target=/var/cache/apt \
 
 WORKDIR /workdir
 
-RUN git clone --depth=1 --branch v4.3.0 \
-    https://github.com/zephyrproject-rtos/zephyr zephyr && \
-    west init -l zephyr
+COPY west.yml manifest/west.yml
+
+RUN west init -l manifest
 
 RUN --mount=type=cache,target=/git-cache \
     west update --narrow -o=--depth=1 --path-cache /git-cache
