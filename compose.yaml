@@ -4,12 +4,16 @@ services:
     extends:
       file: ollama/compose.yaml
       service: ollama
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
 
   webapp:
     platform: linux/arm64
     extends:
       file: webapp/compose.yaml
       service: webapp
+    ports:
+      - "${WEBAPP_PORT:-3000}:3000"
     build:
       args:
         LLM_PROMPT_PRESET: "shakespearean english"
