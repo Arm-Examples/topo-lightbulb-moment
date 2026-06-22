@@ -1,0 +1,28 @@
+manifest:
+  version: "0.13"
+
+  remotes:
+    - name: zephyrproject-rtos
+      url-base: https://github.com/zephyrproject-rtos
+
+  projects:
+    - name: zephyr
+      remote: zephyrproject-rtos
+      revision: v4.3.0
+      import:
+        name-allowlist:
+          # CMSIS is required by Arm Cortex-M SoC and board support.
+          - cmsis
+          - cmsis_6
+
+          # Platform support for the two supported template targets.
+          - hal_stm32
+          - hal_nxp
+
+          # RPMsg/OpenAMP dependencies used by the remote processor firmware.
+          - open-amp
+          - libmetal
+
+          # Keep the libc module available for Zephyr's default C library setup.
+          - picolibc
+
