@@ -1,25 +1,34 @@
-FROM ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+FROM --platform=${BUILDPLATFORM} ghcr.io/astral-sh/uv:python3.14-alpine AS builder
 
 ARG LLM_PROMPT_PRESET
 ARG PLATFORM
 
 WORKDIR /app
 
-# Copy project metadata first to take advantage of caching
 COPY pyproject.toml uv.lock ./
 
-# Install dependencies into the project-local virtual environment
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen --no-dev --python /usr/local/bin/python3
 
-# Copy the application source
 COPY src/app.py .
 COPY src/templates/ templates/
 COPY src/static/ static/
 
-ENV PATH="/app/.venv/bin:${PATH}"
+FROM dhi.io/python:3.14.6-alpine3.22
+
+ARG LLM_PROMPT_PRESET
+ARG PLATFORM
+
+WORKDIR /app
+
+COPY --from=builder /app/.venv/lib/python3.14/site-packages /app/site-packages
+COPY --from=builder /app/app.py .
+COPY --from=builder /app/templates/ templates/
+COPY --from=builder /app/static/ static/
+
+ENV PYTHONPATH="/app/site-packages"
 ENV LLM_PROMPT_PRESET="${LLM_PROMPT_PRESET}"
 ENV PLATFORM="${PLATFORM}"
 
 EXPOSE 3000
 
-CMD ["uv", "run", "python", "app.py"]
+CMD ["python3", "app.py"]
