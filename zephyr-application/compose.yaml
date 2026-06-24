@@ -2,6 +2,11 @@ services:
   zephyr:
     build:
       context: .
+      target: ${ZEPHYR_BUILD_TARGET:-source}
+      cache_from:
+        - type=registry,ref=ghcr.io/arm-examples/topo-lightbulb-moment/zephyr-application:buildcache-${PLATFORM:-stm32mp257}-amd64
+        - type=registry,ref=ghcr.io/arm-examples/topo-lightbulb-moment/zephyr-application:buildcache-${PLATFORM:-stm32mp257}-arm64
       args:
         PLATFORM: ${PLATFORM:-stm32mp257}
+    platform: linux/arm64
     runtime: io.containerd.remoteproc.v1

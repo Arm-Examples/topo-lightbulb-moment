@@ -1,0 +1,149 @@
+name: Publish Zephyr Cache
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publish-zephyr-cache.yml"
+      - "zephyr-application/Dockerfile"
+      - "zephyr-application/Dockerfile.deps"
+      - "zephyr-application/west.yml"
+      - "zephyr-application/workdir/**"
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/arm-examples/topo-lightbulb-moment/zephyr-application
+
+jobs:
+  publish-deps:
+    name: Publish ${{ matrix.host.name }} deps
+    runs-on: ${{ matrix.host.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        host:
+          - name: amd64
+            platform: linux/amd64
+            runner: ubuntu-24.04
+          - name: arm64
+            platform: linux/arm64
+            runner: ubuntu-24.04-arm
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          docker system prune --all --force
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish deps
+        uses: docker/build-push-action@v6
+        with:
+          context: zephyr-application
+          file: zephyr-application/Dockerfile.deps
+          target: deps
+          platforms: ${{ matrix.host.platform }}
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:deps-${{ matrix.host.name }}
+
+  publish-deps-manifest:
+    name: Publish deps manifest
+    runs-on: ubuntu-24.04
+    needs: publish-deps
+
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create multi-arch deps tag
+        run: |
+          docker buildx imagetools create \
+            --tag "${IMAGE_NAME}:deps" \
+            "${IMAGE_NAME}:deps-amd64" \
+            "${IMAGE_NAME}:deps-arm64"
+
+  publish:
+    name: Publish ${{ matrix.platform }} ${{ matrix.host.name }} cache
+    runs-on: ${{ matrix.host.runner }}
+    needs: publish-deps-manifest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - stm32mp257
+          - imx93
+        host:
+          - name: amd64
+            runner: ubuntu-24.04
+          - name: arm64
+            runner: ubuntu-24.04-arm
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          docker system prune --all --force
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish firmware
+        uses: docker/build-push-action@v6
+        with:
+          context: zephyr-application
+          file: zephyr-application/Dockerfile
+          target: source
+          platforms: linux/arm64
+          push: ${{ matrix.host.name == 'amd64' }}
+          build-args: |
+            PLATFORM=${{ matrix.platform }}
+            ZEPHYR_DEPS_IMAGE=${{ env.IMAGE_NAME }}:deps-${{ matrix.host.name }}
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest-${{ matrix.platform }}
+          cache-from: |
+            type=registry,ref=${{ env.IMAGE_NAME }}:buildcache-${{ matrix.platform }}-${{ matrix.host.name }}
+          cache-to: |
+            type=registry,ref=${{ env.IMAGE_NAME }}:buildcache-${{ matrix.platform }}-${{ matrix.host.name }},mode=max,image-manifest=true,compression=zstd
