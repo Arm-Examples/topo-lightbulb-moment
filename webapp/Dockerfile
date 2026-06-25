@@ -1,10 +1,11 @@
+# Build image should be run on host architecture; but built for target architecture.
 FROM --platform=${BUILDPLATFORM} ghcr.io/astral-sh/uv:python3.14-alpine AS builder
 
 WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
 
-RUN uv sync --frozen --no-dev --python /usr/local/bin/python3
+RUN uv sync --frozen --no-dev --python /usr/local/bin/python3 --python-platform aarch64-unknown-linux-musl
 
 FROM dhi.io/python:3.14.6-alpine3.22
 
