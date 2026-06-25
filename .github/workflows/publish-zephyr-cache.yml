@@ -39,13 +39,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Free disk space
+      # Clear enough room for the zephyr image build
         run: |
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /usr/local/share/boost
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          docker system prune --all --force
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -112,13 +112,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Free disk space
+      # Clear enough room for the zephyr image build
         run: |
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /usr/local/share/boost
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          docker system prune --all --force
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
