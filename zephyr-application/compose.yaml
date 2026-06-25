@@ -1,7 +1,0 @@
-services:
-  zephyr:
-    build:
-      context: .
-      args:
-        PLATFORM: ${PLATFORM:-stm32mp257}
-    runtime: io.containerd.remoteproc.v1
