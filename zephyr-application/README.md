@@ -36,7 +36,7 @@ bootstrap the containerised build:
 
 ### Using Docker Compose (Recommended)
 
-The root of this repository includes a `compose.yaml` file that simplifies building and deploying the application with the correct runtime and remoteproc settings.
+The project includes a `compose.yaml` file that simplifies building and deploying the application with the correct runtime and remoteproc settings.
 
 **For STM32MP257 (default):**
 ```bash
