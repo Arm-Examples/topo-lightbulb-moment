@@ -33,6 +33,15 @@ RUN --mount=type=cache,target=/workdir/build,sharing=locked \
     fi
 
 FROM scratch AS source
+
 COPY --from=build /tmp/zephyr.elf /zephyr.elf
+COPY --from=build /workdir/zephyr/LICENSE /licenses/zephyr/LICENSE
+COPY --from=build /workdir/zephyr/NOTICE /licenses/zephyr/NOTICE
+
+LABEL org.opencontainers.image.title="Zephyr Lightbulb Moment Firmware"
+LABEL org.opencontainers.image.description="Zephyr RTOS firmware for the Topo Lightbulb Moment reference application"
+LABEL org.opencontainers.image.source="https://github.com/Arm-Examples/topo-lightbulb-moment"
+LABEL org.opencontainers.image.vendor="Arm"
+LABEL org.opencontainers.image.licenses="Apache-2.0 AND BSD-3-Clause"
 
 ENTRYPOINT [ "/zephyr.elf" ]
