@@ -7,7 +7,7 @@ COPY pyproject.toml uv.lock ./
 
 RUN uv sync --frozen --no-dev --python /usr/local/bin/python3 --python-platform aarch64-unknown-linux-musl
 
-FROM dhi.io/python:3.14.6-alpine3.22
+FROM public.ecr.aws/docker/library/python:3.14.6-alpine3.24
 
 ARG LLM_PROMPT_PRESET
 ARG PLATFORM
