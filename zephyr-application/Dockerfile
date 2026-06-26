@@ -35,6 +35,7 @@ RUN --mount=type=cache,target=/workdir/build,sharing=locked \
 FROM scratch AS source
 
 COPY --from=build /tmp/zephyr.elf /zephyr.elf
+COPY --from=build /workdir/NOTICE /licenses/NOTICE
 COPY --from=build /workdir/zephyr/LICENSE /licenses/zephyr/LICENSE
 COPY --from=build /workdir/zephyr/NOTICE /licenses/zephyr/NOTICE
 

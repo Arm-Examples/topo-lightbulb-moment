@@ -1,0 +1,10 @@
+Topo Lightbulb Moment Zephyr Firmware
+Copyright (c) 2025, Arm Limited
+
+This software includes code derived from the following works:
+
+STMicroelectronics
+  src/main.c is derived from the Zephyr openamp_rsc_table sample
+  https://github.com/zephyrproject-rtos/zephyr/blob/main/samples/subsys/ipc/openamp_rsc_table/src/main_remote.c
+  Copyright (c) 2020, STMICROELECTRONICS
+  SPDX-License-Identifier: Apache-2.0
