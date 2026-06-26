@@ -37,7 +37,6 @@ FROM scratch AS source
 COPY --from=build /tmp/zephyr.elf /zephyr.elf
 COPY --from=build /workdir/NOTICE /licenses/NOTICE
 COPY --from=build /workdir/zephyr/LICENSE /licenses/zephyr/LICENSE
-COPY --from=build /workdir/zephyr/NOTICE /licenses/zephyr/NOTICE
 
 LABEL org.opencontainers.image.title="Zephyr Lightbulb Moment Firmware"
 LABEL org.opencontainers.image.description="Zephyr RTOS firmware for the Topo Lightbulb Moment reference application"
