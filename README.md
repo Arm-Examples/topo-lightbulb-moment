@@ -1,6 +1,6 @@
 # Lightbulb Moment
 
-> This is a [Topo](https://github.com/arm/topo) Project and follows the [Topo Project Specification](https://github.com/arm/topo-project-specification).
+> This is a [Topo](https://github.com/arm/topo) Project and follows the [Topo Project Specification](https://github.com/arm/topo/tree/main/docs/project-specification).
 
 An Arm Cortex-M core reads a physical switch over GPIO and reports its state to a Cortex-A core via RPMsg. A web application on the Cortex-A core displays a lightbulb - on or off - described by an LLM in any user-specified style.
 
