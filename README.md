@@ -1,6 +1,6 @@
 # Lightbulb Moment
 
-> This project is a [Topo](https://github.com/arm/topo) template and follows the [Topo Template Format Specification](https://github.com/arm/Topo-Template-Format).
+> This is a [Topo](https://github.com/arm/topo) Project and follows the [Topo Project Specification](https://github.com/arm/topo/tree/main/docs/project-specification).
 
 An Arm Cortex-M core reads a physical switch over GPIO and reports its state to a Cortex-A core via RPMsg. A web application on the Cortex-A core displays a lightbulb - on or off - described by an LLM in any user-specified style.
 
@@ -50,13 +50,13 @@ topo install remoteproc-runtime --target <user@hostname>
 
 ### Clone the project using `topo`
 
-The clone step will ask you for the following build arguments:
+The clone step will prompt you for values for the following parameters:
 
 - `PLATFORM`: either `stm32mp257` or `imx93`
 - `REMOTEPROC`: either `m33` (for stm32mp257) or `imx-rproc` (for imx93)
 - `LLM_PROMPT_PRESET`: any style description (e.g., "pirate", "shakespearean english", "haiku", "detective noir")
 
-Clone and set arguments:
+Clone and set parameter values:
 
 ```bash
 topo clone git@github.com:Arm-Examples/topo-lightbulb-moment.git
