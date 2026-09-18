@@ -15,7 +15,7 @@ services:
       context: ./webapp
       dockerfile: Dockerfile
       args:
-        LLM_PROMPT_PRESET: "shakespearean english"
+        LLM_PROMPT_PRESET: ${LLM_PROMPT_PRESET:-shakespearean english}
         PLATFORM: ${PLATFORM:-stm32mp257}
     privileged: true
     volumes:
