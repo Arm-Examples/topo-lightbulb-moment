@@ -51,6 +51,10 @@ volumes:
 x-topo:
   name: "Lightbulb Moment"
   description: "Reads a switch over GPIO pins on an M class cpu, reports switch state over Remoteproc Message, then a web application on the A class reads this and displays a lightbulb in either the on or off state. The lightbulb state is described by an LLM in any user-specified style."
+  deployment_success_message: |
+    Lightbulb Moment deployed successfully.
+    Open http://${TOPO_TARGET_HOSTNAME:-<target-hostname>}:${WEBAPP_PORT:-3000} in your browser.
+    Toggle the physical switch to see the lightbulb state and its LLM-generated description.
   features:
     - "remoteproc-runtime"
   args: &args
